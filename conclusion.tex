@@ -1,0 +1,38 @@
+\subsection{Summary of Results}
+
+One common features among successful architectures was a convolutional encoder taking grid-based observations. On the 3m map, every architecture with a convolutional encoder performed at least as well as the standard rnn architecture without such an encoder. On the 2s3z map, most architectures underperformed when compared to the standard rnn architecture. The only architecture to perform well on this map was the conv\_input\_grid architecture, suggesting that grid-based action representation is required, along with grid-based observations. The effect on performance of the covolutional encoder on all architectures (compared to architectures without a convolutional encoder) was far greater on the 3m map than the 2s3z map. We can therefore conclude that a convolutional encoder is more effective in simpler maps.
+
+Additionally, we also found that (at least on small maps), the architecture need no be recurrent, and may even hinder performance if it is. This was shown by the conv\_input\_grid architecture having surprisingly good performance without the GRU-cell. As described before, this is likely due to the small maps being strongly deterministic, whereas in larger maps this may not be the case, requiring the network to be recurrent.
+
+Moreover, we found that the level of observation provided as an input to the conv\_input\_grid architecture has little effect on performance. In fact, we found that the architecture is able to deduce most of the observation simply through the grid-based available action input. This allows us to conclude that the grid-based representation of the actions (provided as input) is very beneficial to the agent, and provides a strong insight into its envrionemt, and ultimately leads to strong performance.
+
+Finally, we found that the memory requirements for architectures utilising grid-based observations and actions to be extremely larger (~5Gb per network, compared to <1Gb for non-grid-based architetcures for small maps). This is a downfall of the approach, as it limits the size the map that can be trained upon.
+
+
+
+
+
+\subsection{Future Work}
+
+Due to the size and scope of this project there are a number of directions in which it can be continued and/or improved. 
+
+
+
+
+
+\subsubsection{Exploring Other Environment Abstractions}
+
+There are a number of various possible abstractions of the environment that may yield better results, whilst still maintaining independence from the number of units. One such example is described in section 5.2 (although some adaptation needs to be made), but others could be considered. 
+
+Although abstractions similar to a grid representation of observations is almost a necessity (in order to maintain independence from the number of units), it is often a sparse representation, leading to large memory usage and slow convergence. Therefore, future work to reduce this sparsity, perhaps by pruning the abstraction in some way, would likely yield better results.
+
+\subsubsection{Exploring Other Neural Network Layers}
+
+A major obstacle in this project was the large memory usage of some of the architectures, especially those with convolutional layers. This is likely since the convolutional layers used in this project did not significantly reduce the input image, leading to a very large network after these layers. However, this did allow the network to retain a large amount of the information in the image, so a balance must be made. It would be useful to evaluate the performance of the architectures using different numbers and sizes of convolutional layers. For example, one convolutional encoder that has shown great potential is found in \cite{natureencoder}, which uses 3 convolutional layers.
+
+Another idea that can be explored is using different recurrent units (instead of GRUs), such as LSTM units. LSTMs have similar performance to GRUs in NLP \cite{lstmvsgru}, but it would be useful to evaluate their relative performance in this environment. 
+
+\subsection{Personal Development}
+This project allowed me to explore my passion for Reinforcement Learning. In particular, I was able to implement and appreciate various concepts from the Machine Learning course, such as convolutional neural networks, as well as evaluating them using state-of-the-art hardware.
+
+Furthermore, the scope of this project was larger than anything previously undertaken, which gave me an invaluable insight into collaborative research.
