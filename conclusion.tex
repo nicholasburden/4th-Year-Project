@@ -1,12 +1,12 @@
 \subsection{Summary of Results}
+The main result from this report concerns transfer learning between scenarios using our task invariant architecture. We were able to disprove our hypothesis that due to the partial observability of the environment, observations look the same for different scenarios, so learning on one map will translate into good performance on the other. We can conclude that other factors, such as the difference in input space, cause this difficulty in transfer learning.
 
-One common features among successful architectures was a convolutional encoder taking grid-based observations. On the 3m map, every architecture with a convolutional encoder performed at least as well as the standard rnn architecture without such an encoder. On the 2s3z map, most architectures underperformed when compared to the standard rnn architecture. The only architecture to perform well on this map was the conv\_input\_grid architecture, suggesting that grid-based action representation is required, along with grid-based observations. The effect on performance of the covolutional encoder on all architectures (compared to architectures without a convolutional encoder) was far greater on the 3m map than the 2s3z map. We can therefore conclude that a convolutional encoder is more effective in simpler maps.
+However, we were able to train a single network on multiple scenarios to a very high level. This indicates that a single network has a far greater capacity for learning that a single scenario. Furthermore, this shows that the various tasks are in fact very closely linked; we have shown that these scenarios can be `beaten' by a generalisable architecture trained over each map.
 
-Additionally, we also found that (at least on small maps), the architecture need no be recurrent, and may even hinder performance if it is. This was shown by the conv\_input\_grid architecture having surprisingly good performance without the GRU-cell. As described before, this is likely due to the small maps being strongly deterministic, whereas in larger maps this may not be the case, requiring the network to be recurrent.
 
-Moreover, we found that the level of observation provided as an input to the conv\_input\_grid architecture has little effect on performance. In fact, we found that the architecture is able to deduce most of the observation simply through the grid-based available action input. This allows us to conclude that the grid-based representation of the actions (provided as input) is very beneficial to the agent, and provides a strong insight into its envrionemt, and ultimately leads to strong performance.
+Moreover, among our results were useful conclusions regarding the strength of various features of an agent architecture in this environment. We found that using actions as inputs into a convolutional encoder was an extremely successful technique, to the point that only a minimal observation input was required, since the action itself provided extremely valuable information. Comparing the performance of the conv\_input\_grid an conv\_input\_flat architectures, we can see that this action input is most useful when represented in grid format. This closely matches the spatial nature of the environment.
 
-Finally, we found that the memory requirements for architectures utilising grid-based observations and actions to be extremely larger (~5Gb per network, compared to <1Gb for non-grid-based architetcures for small maps). This is a downfall of the approach, as it limits the size the map that can be trained upon.
+Finally, we found that the memory requirements for architectures utilising grid-based observations and actions to be extremely large (~5Gb per network, compared to under 1Gb for non-grid-based architectures for small maps). This is a major downfall of the approach, as it limits the size the map that can be trained upon, and increases the training time.
 
 
 
@@ -14,17 +14,19 @@ Finally, we found that the memory requirements for architectures utilising grid-
 
 \subsection{Future Work}
 
-Due to the size and scope of this project there are a number of directions in which it can be continued and/or improved. 
+Due to the size and scope of this project there are a number of directions in which it can be continued or improved. We detail some of the most promising avenues here.
 
 
+\subsubsection{Task Invariance Using QMIX}
 
+The QMIX mixing network is inherently dependent on the task: the number of inputs in the network depends on the number of agents. The VDN mixing network does not have this problem, it simply sums the $Q$-values of each agent. There is scope in this project to adapt the QMIX mixing network for task invariance. This would involve a transformer-style architecture to process a new representation of the state that is independent of the number of units in the map.
 
 
 \subsubsection{Exploring Other Environment Abstractions}
 
 There are a number of various possible abstractions of the environment that may yield better results, whilst still maintaining independence from the number of units. One such example is described in section 5.2 (although some adaptation needs to be made), but others could be considered. 
 
-Although abstractions similar to a grid representation of observations is almost a necessity (in order to maintain independence from the number of units), it is often a sparse representation, leading to large memory usage and slow convergence. Therefore, future work to reduce this sparsity, perhaps by pruning the abstraction in some way, would likely yield better results.
+Although abstractions similar to a grid representation of observations is almost a necessity (in order to maintain independence from the number of units), it is often a sparse representation, leading to large memory usage and slow convergence. Therefore, future work to reduce this sparsity, perhaps by compressing the abstraction in some way, would likely yield better results.
 
 \subsubsection{Exploring Other Neural Network Layers}
 
@@ -35,4 +37,4 @@ Another idea that can be explored is using different recurrent units (instead of
 \subsection{Personal Development}
 This project allowed me to explore my passion for Reinforcement Learning. In particular, I was able to implement and appreciate various concepts from the Machine Learning course, such as convolutional neural networks, as well as evaluating them using state-of-the-art hardware.
 
-Furthermore, the scope of this project was larger than anything previously undertaken, which gave me an invaluable insight into collaborative research.
+Furthermore, the scope of this project was larger than anything previously undertaken, which gave me an invaluable insight into collaborative research by using open-communication channels, version control of a large shared repository, as well as discussions with various other lab members. This project has also been used by the lab to work towards a more general multi-agent RL algorithm.
