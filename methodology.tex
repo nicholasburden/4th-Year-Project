@@ -4,7 +4,7 @@ The agent networks are implemented in Python using the PyTorch framework \cite{p
 
 The agent network takes the form of a neural network to approximate the state-value function, which takes an input (a tensor) consisting of an observation (and possibly a particular action). Due to PyTorch's ability to batch process multiple inputs through a neural network, we are able to combine the inputs for every agent into a single tensor, and process this for efficiency. Concretely, if there are $n$ agents and each observation has size $o$, then the input tensor has shape $(n, o)$, while the output tensor of $Q$ values has size $(n, a)$, where $a$ is the number of actions (since we have an output for each available action, representing its corresponding $Q$-value). Conversely, if the agent network takes actions as input also (and gives a single $Q$ value as output), then the input tensor has shape $(n \times a, o)$ and the output tensor has shape $(n \times a, 1)$.
 
-As described in section 2.6, the $Q$-value for each agent is fed into a mixing network (e.g. QMIX or VDN), to determine $Q_total$. Using backpropagation we can train the entire network, including the mixing network.
+As described in section 2.6, the $Q$-value for each agent is fed into a mixing network (e.g. QMIX or VDN), to determine $Q_{total}$. Using backpropagation we can train the entire network, including the mixing network.
 
 Several approaches have been taken to design the agent networks, including various combinations of convolutional and recurrent neural networks, as well as different representations of both observations and actions. Here we discuss these approaches in detail, as well as considering the challenges associated with each method.
 

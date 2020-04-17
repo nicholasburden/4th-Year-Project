@@ -1,10 +1,10 @@
 \subsection{Summary of Results}
-The main result from this report concerns transfer learning between scenarios using our task invariant architecture. We were able to disprove our hypothesis that due to the partial observability of the environment, observations look the same for different scenarios, so learning on one map will translate into good performance on the other. We can conclude that other factors, such as the difference in input space, cause this difficulty in transfer learning.
 
-However, we were able to train a single network on multiple scenarios to a very high level. This indicates that a single network has a far greater capacity for learning that a single scenario. Furthermore, this shows that the various tasks are in fact very closely linked; we have shown that these scenarios can be `beaten' by a generalisable architecture trained over each map.
+The main result from this report concerns training and testing on multiple scenarios using our task invariant architecture. We found that transferring to an unseen scenario exhibited very poor performance (although performance was less poor when transferring to a smaller map). However, we found that when the architecture is trained on multiple scenarios simultaneously, it exhibited high performance on each of those maps. This indicates that a single network has a far greater capacity for learning than a single scenario. Furthermore, this shows that the various tasks are in fact very closely linked; we have shown that these scenarios can be played very well by a generalisable architecture trained over each map, which supports our partial observability hypothesis.
 
 
-Moreover, among our results were useful conclusions regarding the strength of various features of an agent architecture in this environment. We found that using actions as inputs into a convolutional encoder was an extremely successful technique, to the point that only a minimal observation input was required, since the action itself provided extremely valuable information. Comparing the performance of the conv\_input\_grid an conv\_input\_flat architectures, we can see that this action input is most useful when represented in grid format. This closely matches the spatial nature of the environment.
+
+Moreover, among our results were useful conclusions regarding the strength of various features of an agent architecture in this environment. We found that using actions as inputs into a convolutional encoder was an extremely successful technique, to the point that only a minimal observation input was required, since the action itself provided extremely valuable information.
 
 Finally, we found that the memory requirements for architectures utilising grid-based observations and actions to be extremely large (~5Gb per network, compared to under 1Gb for non-grid-based architectures for small maps). This is a major downfall of the approach, as it limits the size the map that can be trained upon, and increases the training time.
 
@@ -19,20 +19,15 @@ Due to the size and scope of this project there are a number of directions in wh
 
 \subsubsection{Task Invariance Using QMIX}
 
-The QMIX mixing network is inherently dependent on the task: the number of inputs in the network depends on the number of agents. The VDN mixing network does not have this problem, it simply sums the $Q$-values of each agent. There is scope in this project to adapt the QMIX mixing network for task invariance. This would involve a transformer-style architecture to process a new representation of the state that is independent of the number of units in the map.
+The QMIX mixing network is inherently dependent on the task: the number of inputs in the network depends on the number of agents. The VDN mixing network does not have this problem, it simply sums the $Q$-values of each agent. Future work could involve adapting the QMIX mixing network for task invariance. This would involve a transformer-style architecture to process a new representation of the state that is independent of the number of units in the map.
 
 
-\subsubsection{Exploring Other Environment Abstractions}
+\subsubsection{Observing Terrain}
 
-There are a number of various possible abstractions of the environment that may yield better results, whilst still maintaining independence from the number of units. One such example is described in section 5.2 (although some adaptation needs to be made), but others could be considered. 
+The terrain of a StarCraft II map (high ground and low ground) can be particularly important information to aid with micromanagement. For example, attacking from high ground allows units to not be seen by the enemy (until the enemy is attacked), so it is an advantageous position to be in.
 
-Although abstractions similar to a grid representation of observations is almost a necessity (in order to maintain independence from the number of units), it is often a sparse representation, leading to large memory usage and slow convergence. Therefore, future work to reduce this sparsity, perhaps by compressing the abstraction in some way, would likely yield better results.
+Currently, the agent architecture does not use this observation, but it would be useful to evaluate its effectiveness.
 
-\subsubsection{Exploring Other Neural Network Layers}
-
-A major obstacle in this project was the large memory usage of some of the architectures, especially those with convolutional layers. This is likely since the convolutional layers used in this project did not significantly reduce the input image, leading to a very large network after these layers. However, this did allow the network to retain a large amount of the information in the image, so a balance must be made. It would be useful to evaluate the performance of the architectures using different numbers and sizes of convolutional layers. For example, one convolutional encoder that has shown great potential is found in \cite{natureencoder}, which uses 3 convolutional layers.
-
-Another idea that can be explored is using different recurrent units (instead of GRUs), such as LSTM units. LSTMs have similar performance to GRUs in NLP \cite{lstmvsgru}, but it would be useful to evaluate their relative performance in this environment. 
 
 \subsection{Personal Development}
 This project allowed me to explore my passion for Reinforcement Learning. In particular, I was able to implement and appreciate various concepts from the Machine Learning course, such as convolutional neural networks, as well as evaluating them using state-of-the-art hardware.

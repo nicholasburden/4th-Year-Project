@@ -12,7 +12,7 @@ Scaled dot-product attention is a specific attenuation function with the followi
 Attention(Q,K,V)=softmax(\frac{QK^T}{\sqrt{d_k}})V
 \]
 
-Where $Q$, $K$, and $V$ are the matrices containing the queries, keys, and values respectively, with n being the dimension of the queries and keys.
+Where $Q$, $K$, and $V$ are the matrices containing the queries, keys, and values respectively, with $d_k$ being the dimension of the queries and keys.
 
 Self-attention refers to the situation where the queries, keys, and values are all created using encodings of the sequence. Each encoder and decoder uses such an attention mechanism, which generates weights for each input when producing the output. Both the encoders and decoders have a feed-froward neural network for additional processing of the outputs \cite{illustratedtransformer}.
 
@@ -23,21 +23,13 @@ Therefore, this network architecture is a very promising approach in the StarCra
 
 \subsection{Graph Convolutional Reinforcement Learning}
 
-An alternative approach is to model the environment as a graph, as described in \cite{graph}. This builds on some of the ideas explored in this paper, but formalises the relationships between agents (and other units) using a graph. Each agent is represented by a node in the graph, and each node $i$ has a set of neighbours, $\mathbb{B}_i$, which is determined by distance or other metrics \cite{graph}.
+An alternative approach is to model the environment as a graph, as described in \cite{graph}. This builds on some of the ideas explored in this report, but formalises the relationships between agents (and other units) using a graph. Each agent is represented by a node in the graph, and each node $i$ has a set of neighbours, $\mathbb{B}_i$, which is determined by distance or other metrics \cite{graph}.
 
-A network architecture is described in \cite{graph} for environments represented in this way, called graph  convolutional reinforcement learning, namely DGN. DGN consists of three types of modules:  observation encoder, convolutional layer and Q-network. For agent $i$ at time step $t$, the observation encoder encodes partial observation $o_i^t$ into latent feature $h_i^t$ \cite{graph}. The convolutional layer integrates the feature vectors in the local region (including node $i$ and its neighbors, $\mathbb{B}_i$) and generates the latent feature vector ${h'}^t_i$. By stacking more convolutional layers, the receptive field of an agent gradually grows, where more information is gathered, and thus the scope of cooperation can also increase \cite{graph}. The final latent feature is then used as input into the Q-network as normal.
+A network architecture is described in \cite{graph} for environments represented in this way, called graph  convolutional reinforcement learning, namely DGN. DGN consists of three types of modules:  observation encoder, convolutional layer and Q-network. 
 
-DGN shares weights among all agent, making it easy to scale, and has shown great success in various game examples \cite{graph}. Therefore, applying this technique to the StarCraft II environment has a lot of potential, especially considering the successes of convolutional neural networks in this project. 
+DGN shares weights among all agents, making it easy to scale, and has shown great success in various game examples \cite{graph}. Therefore, applying this technique to the StarCraft II environment has a lot of potential, especially considering the successes of CNNs in this project. 
 
-A downfall of this approach is that it is not invariant to the number of agents, since the size of the graph is defined in terms of this. A possible way to adapt this is, perhaps, to make each node a specific location in the environment, and assign weights to the edges with respect to agent locations. For example, edge $e_i = (u,v)$ has finite weight if, and only if, there are two agents close to the locations represented by nodes $u$ and $v$ respectively.
-
-
-\iffalse
-\subsection{Actor-Critic Methods}
+A drawback of this approach is that it is not invariant to the number of agents, since the size of the graph is defined in terms of this. A possible way to adapt this is, perhaps, to make each node a specific location in the environment, and assign weights to the edges with respect to agent locations. For example, edge $e_i = (u,v)$ has finite weight if, and only if, there are two agents close to the locations represented by nodes $u$ and $v$ respectively.
 
 
-Counterfactual Multi-Agent Policy Gradients (COMA) is a multi-agent reinforcement learning algorithm that uses a centralised critic to estimate the Q-function
-and decentralised actors to optimise the agents' policies \cite{coma}. The algorithm also uses a \textit{counterfactual baseline} that marginalises out a single agent's action to address the challenges of agent credit assignment \cite{coma}. Each agent learns from a shaped reward $D^d=r(s,\textbf{a}) - r(s,(\textbf{a}^{-d},c^d$, where $d$ is the agent and $\textbf{a}$ is the joint action \cite{coma}. The global reward is compared to the reward received when the action of agent $d$ is replaced with a \textit{default action} $c^d$. The intuition behind this is that if an action improves $D^d$, then this action also improves the true global reward.
 
-More details can be found in \cite{coma}.
-\fi

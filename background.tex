@@ -18,14 +18,14 @@ $R$ is referred to as the \textit{reward function}.
 \subsection{Reinforcement Learning}
 Reinforcement Learning (RL) is a paradigm of Machine Learning (ML) that attempts to solve a specified MDP (usually by maximising the total accrued reward in some way or another). RL aims to generate a \textit{policy} $\pi : S \to A$, where $S$ is the set of states and $A$ is the set of possible actions (the policy may also take the form of a probability distributions, mapping a state-action pair to a probability). This policy is developed during the training phase, and then can be used to choose each action during execution.
 
-RL algorithms can be either model-based or model-free. In model-based RL, the agent internally represents the environment in order to be able to predict subsequent states. In model-free RL the agent ignores this model. Every RL algorithm discussed in this paper will be model-free.
+RL algorithms can be either model-based or model-free. In model-based RL, the agent internally represents the environment in order to be able to predict subsequent states. In model-free RL the agent has no access to a model of the environment. Every RL algorithm discussed in this paper will be model-free.
 
-In an RL algorithm we also specify a learning rate $\alpha$ and discount factor $\gamma$. The learning rate specifies to what extent new information is prioritised over older information. With a learning rate of 0, the agent learns nothing new, but with a learning rate of 1, only the most recent experience is considered. The discount factor determines the importance of future rewards. A discount rate of 1 values a reward far in the future just as much as an immediate reward, but a discount factor of 0 only considers the immediate reward.
+In an RL algorithm we also specify a learning rate $\alpha$ and discount factor $\gamma \in [0,1]$. The learning rate specifies to what extent new information is prioritised over older information, so that with a learning rate of 0, the agent learns nothing new, but with a learning rate of 1, only the most recent experience is considered. The discount factor determines the importance of future rewards. A discount rate of 1 values a reward far in the future just as much as an immediate reward, but a discount factor of 0 only considers the immediate reward.
 
 
 
 \subsection{Q-Learning}
-The Q-learning algorithm maintains a state-action value function $Q : S \times A \to \mathbb{R}$ which specifies the quality of performing an action $a$ when in state $s$ and then following policy $\pi$. This is the discounted expected return of choosing action $a$ in state $s$. The algorithm typically gives the policy (which is independent of Q-learning) in accordance with he $\epsilon$-greedy action choice method:
+The Q-learning algorithm maintains a state-action value function $Q : S \times A \to \mathbb{R}$ which specifies the quality of performing an action $a$ when in state $s$ and then following policy $\pi$. This value represents the discounted expected return of choosing action $a$ in state $s$. The algorithm typically gives the policy (which is independent of Q-learning) in accordance with the $\epsilon$-greedy action choice method:
 
 
 \[ \pi(s) = \begin{cases} 
@@ -49,7 +49,7 @@ In standard Q-learning, the $Q$ function is stored as a table (a \textit{Q-table
 
 \subsection{Neural Networks}
 
-Neural networks aim to approximate a mathematical function. The network consists of multiple layers of artificial neurons which linearly combine inputs and uses an \textit{activation function} (which is typically non-linear) to compute an output. The outputs of each neuron in a particular layer form the inputs of each neuron in the next layer. More formally, we represent the weights of a layer $l$ by matrix $\boldsymbol{W}^l$, so that for neuron $i$ in layer $l$, the weight of the input from neuron $j$ from layer $l-1$ is $\boldsymbol{W}^l_{ij}$. We represent the biases of layer $l$ by vector $\boldsymbol{b}^l$, so that for neuron $i$, the value $\boldsymbol{b}^l_i$ is added to the result of the linear operation. Therefore, we can define the activations of a layer $l$ \cite{csmlnotes}:
+Neural networks aim to approximate a mathematical function. The network consists of multiple layers of artificial neurons which linearly combine inputs and uses an \textit{activation function} (which is typically non-linear) to compute an output. The outputs of each neuron in a particular layer form the inputs of each neuron in the next layer. More formally, we represent the weights of a layer $l$ by matrix $\boldsymbol{W}^l$, so that for neuron $i$ in layer $l$, the weight of the input from neuron $j$ from layer $l-1$ is $\boldsymbol{W}^l_{ij}$. We represent the biases of layer $l$ by vector $\boldsymbol{b}^l$, so that for neuron $i$, the value $\boldsymbol{b}^l_i$ is added to the result of the linear operation. Therefore, we can define the activations of a layer $l$ \cite{csmlnotes}, $\boldsymbol{a}^{l}$:
 
 \[
 \boldsymbol{z}^l = \boldsymbol{W}^l \boldsymbol{a}^{l-1} + \boldsymbol{b}^l
@@ -74,7 +74,7 @@ A loss function is a mapping from a set of values to a real number in order to r
 
 
 \subsubsection{Convolutional Neural Networks}
-Convolution Neural Networks (CNNs) use a convolution operation: a linear operation in place of matrix multiplication found in standard neural networks \cite{cnn}. This convolution operation consists of a \textit{kernel} (a small matrix) that performs dot products over the input tensor in accordance with parameters such as stride and padding. The \textit{stride} of a convolution is how much the kernel moves between dot products, and \textit{padding} indicates how many layers of zeroes to add to the border of the input tensor \cite{cnn}. The convolution operation is illustrated in figure \ref{fig:cnn}.
+Convolution Neural Networks (CNNs) use a convolution operation: a linear operation in place of matrix multiplication found in standard neural networks \cite{cnn}. This convolution operation consists of a \textit{kernel} (a small tensor) that performs dot products over the input tensor in accordance with parameters such as stride and padding. The \textit{stride} of a convolution is how much the kernel moves between dot products, and \textit{padding} indicates how many layers of zeroes to add to the border of the input tensor \cite{cnn}. The convolution operation is illustrated in figure \ref{fig:cnn}.
 
 \begin{figure}
     \centering
@@ -103,7 +103,7 @@ Recurrent Neural Networks (RNNs) are a class of neural network that is able to `
 
 A solution for this problem in RNNs is to use a Gated Recurrent Unit (GRU) \cite{gru} which have operations update-gate and reset-gate which are used to filter the amount of passed information to consider. 
 
-Another popular architecture is the LSTM \cite{lstm}, which builds upon the GRU architecture by providing a forget gate, which regulates the amount of information to be ``forgotten'', and an output gate which decides on the next hidden state \cite{lstm}.
+Another popular architecture is the LSTM \cite{lstm}, which is similar to the GRU architecture, but provides a forget gate, which regulates the amount of information to be ``forgotten'', and an output gate which decides on the next hidden state \cite{lstm}.
 
 LSTMs and GRUs have both exhibited similar performance in natural language processing tasks \cite{lstmvsgru}, so we will only consider the use of GRU-cells in the architectures of this project.
 
@@ -191,11 +191,11 @@ Value Decomposition Networks \cite{vdn} (VDN), by contrast, aim to learn a joint
 
 \[Q_{tot}(\boldsymbol{\tau}, \textbf{a}) = \sum_{i=1}^{n} Q_i(\tau^i,a^i;\theta^i) \]
 
-where $\boldsymbol{\tau}$ is the joint observation history, $\textbf{a}$ is the joint action, $Q_i$ is the $Q$ function for agent $i$ and $\theta^i$ are the parameters for agent $i$'s network.
+where $\boldsymbol{\tau}$ is the joint observation history, $\textbf{a}$ is the joint action, $Q_i$ is the utility function for agent $i$ and $\theta^i$ are the parameters for agent $i$'s network.
 
 Q is then learnt in the same way as DQN, but during execution this policy is very easy to decentralise (each agent chooses greedily with respect to its own $Q_i$).
 
-During execution, each agent can simply use its own $Q$-network it trained during training. This follows the \textit{centralised learning with decentralised execution} paradigm.
+This follows the \textit{centralised learning with decentralised execution} paradigm.
 
 \subsubsection{QMIX}
 QMIX is a state-of-the-art deep MARL algorithm that lies between the extremes of IQL and centralised Q-learning \cite{qmixcite}. Instead of requiring the decentralised policies be consistent with the centralised counterpart, as in VDN, all that we require in this section is that a global argmax performed on $Q_{tot}$ yields
@@ -209,7 +209,7 @@ performed on each $Q_a$:
     \end{bmatrix}\]
 
 
-As a consequence of this constraint, as in VDN, an agent can execute in a decentralised fashion simply by choosing $a$ greedily according to its Q-value.
+
 
 
 
