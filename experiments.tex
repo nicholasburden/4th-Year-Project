@@ -142,10 +142,10 @@ As we can see, especially on the 6x6 map, there is some drop in performance when
 \subsection{A Task Invariant Architecture}
 In this section we test our partial observability hypothesis that a successful task invariant architecture exists (enabled by the partial observability of StarCraft), particularly with the use of a CNN for the extraction of spatial information.
 
-The conv\_input\_grid architecture is task invariant, except for the input of agent IDs. This is input in order to allow the different agents to share network weights, with the ID being used by the network to distinguish between the agents. However, the RNN and new observation (and action) representation already encode this differentiaiton between agents: the observation is centralised around the agent, and the GRU-cell's `memory' is able to `remember' past observations, making the agents easy to tell apart. Therefore, we hypothesise that the agent ID is a redundant input. We will refer to this as the agent ID hypothesis. We can therefore create a task invariant architecture, conv\_input\_grid\_no\_id, by removing this input.
+The conv\_input\_grid architecture is task invariant, except for the input of agent IDs. This is input in order to allow the different agents to share network weights, with the ID being used by the network to distinguish between the agents. However, the RNN and new observation (and action) representation already encode this differentiaiton between agents: the observation is centralised around the agent, and the GRU-cell's `memory' is able to `remember' past observations, making the agents easy to tell apart. This suggests that the agent ID is a redundant input. We can therefore create a task invariant architecture, conv\_input\_grid\_no\_id, by removing this input.
 
 
-We now test the agent ID hypothesis, using the same experiment set up as before, on both the 3m and 2s3z maps. This allows us to see the effect of removing the agent ID input on both a simple map with one unit type, and a larger map with multiple unit types.
+To test the redundancy of the agent ID, using the same experiment set up as before, on both the 3m and 2s3z maps. This allows us to see the effect of removing the agent ID input on both a simple map with one unit type, and a larger map with multiple unit types.
 
 Figure \ref{fig:noid} shows the results of this experiment compared to the previous results for the conv\_input\_grid architecture.
 
@@ -157,7 +157,7 @@ Figure \ref{fig:noid} shows the results of this experiment compared to the previ
 \end{figure}
 
 
-Clearly, the architecture suffered very little decrease in performance on both maps. Even though agents share network weights, these results suggest that the network can differentiate between the agents somehow, thus rendering the agent ID unnecessary. The network may be able to perform this differentiation through the use of its GRU-cell. Therefore, this result allows us to hypothesise that the recurrent nature of the architecture is necessary to distinguish between agents effectively, and therefore exhibit high performance in StarCraft. We shall refer to this as the RNN hypothesis. This is easily tested by removing the GRU-cell from the conv\_input\_grid\_no\_id architecture and performaing the same experiment to measure performance. The result of this experiment is show in figure \ref{fig:rnnvsnonrnn}.
+Clearly, the architecture suffered very little decrease in performance on both maps. Even though agents share network weights, these results suggest that the network can differentiate between the agents somehow, thus rendering the agent ID unnecessary. The network may be able to perform this differentiation through the use of its GRU-cell. Therefore, this result suggests that the recurrent nature of the architecture is necessary to distinguish between agents effectively, and therefore exhibit high performance in StarCraft. This is easily tested by removing the GRU-cell from the conv\_input\_grid\_no\_id architecture and performing the same experiment to measure performance. The result of this experiment is show in figure \ref{fig:rnnvsnonrnn}.
 
 \begin{figure}
     \centering
@@ -167,7 +167,7 @@ Clearly, the architecture suffered very little decrease in performance on both m
 \end{figure}
 
 
-We can see that, although performance has showed a significant decrease, the network is still learning fairly effectively. Our RNN hypothesis has been shown to be somewhat true, but incomplete: there must be another feature of the architecture that allows it to distinguish between agents and learn effectively. 
+We can see that, although performance has showed a small decrease, the network is still learning fairly effectively. Therefore it can be said that a GRU-cell is somewhat useful to the network, but there must be another feature of the architecture that allows it to distinguish between agents and learn effectively. 
 
 The new representation of actions (which are input into the network) may even be rich enough to encode valuable information. Each available action is input into the network (in grid format), with each action being either attack or movement. Whilst the available movement actions generally give little information (an agent can almost always move in any direction), the available attack actions directly inform the network of where the enemies are (since each enemy is a single attack action).
 
@@ -216,7 +216,7 @@ As expected, an empty observation gives very poor performance: the network canno
 
 
 
-\subsection{Transfer Learning}
+\subsection{Transfer and Multi-Task Learning}
 
 Finally, with our task invariant architecture (conv\_input\_grid\_no\_id) we are able to test our partial observability hypothesis by evaluating the performance of a trained model on a different map.
 
@@ -267,7 +267,7 @@ The results of this simultaneous learning can be seen in the top left graph in f
 \begin{figure}[h]
     \centering
     \hbox{\hspace{-5em}\includegraphics[width=1.2\textwidth]{images/graphs/all.png}}
-    \caption{Mean test win rate of the conv\_input\_grid architecture simultaneously learning various sets of maps simultaneously. The shaded region shows one standard deviation above and below the mean. The network can be seen to reach high performance on multiple maps simultaneously.}
+    \caption{Mean test win rate of the conv\_input\_grid\_no\_id architecture simultaneously learning various sets of maps simultaneously. The shaded region shows one standard deviation above and below the mean. The network can be seen to reach high performance on multiple maps simultaneously.}
     \label{fig:reptileall}
 \end{figure}
 
@@ -280,6 +280,6 @@ A natural extension to this experiment is to try to learn on more than 2 maps, o
 
 When trained on 3m, 5m and 8m, we can see only a small drop in performance and increase in variance when compared to the performance of training on the individual maps. A similar observation can be made when trained on 2s3z and 3s5z. The performance limit and final variance is equal to those individual maps, showing that, with enough training time, the network can achieve the highest performance possible on multiple maps.
 
-When trained on both 3m and 2s3z, we see a significant decrease in performance when compared to the performance of training on the individual maps. This is likely because each map has an entirely different set of unit types, and therefore the maps are not very similar.
+When trained on both 3m and 2s3z, we do see a significant decrease in performance (increased convergence time and variance) when compared to the performance of training on the individual maps. This is likely because each map has an entirely different set of unit types, and therefore the maps are not very similar. However, the limit of performance is still high, suggesting the network can effectively learn both maps simultaneously.
 
-Overall, under this new system of training on multiple maps simultaneously, we have shown that our task invariant architecture is able to learn across various tasks with great success, owing to the similarity of such tasks, thus supporting our partial observability hypothesis.
+Overall, under this new system of training on multiple maps simultaneously, we have shown that our task invariant architecture is able to learn across various tasks with some level of success, albeit with reduced performance in some cases. These results largely support our partial observability hypothesis, but the decrease in performance suggests there are some differences between the tasks that cause difficulty for a single network.

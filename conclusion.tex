@@ -1,10 +1,12 @@
 \subsection{Summary of Results}
 
-The main result from this report concerns training and testing on multiple scenarios using our task invariant architecture. We found that transferring to an unseen scenario exhibited very poor performance (although performance was less poor when transferring to a smaller map). However, we found that when the architecture is trained on multiple scenarios simultaneously, it exhibited high performance on each of those maps. This indicates that a single network has a far greater capacity for learning than a single scenario. Furthermore, this shows that the various tasks are in fact very closely linked; we have shown that these scenarios can be played very well by a generalisable architecture trained over each map, which supports our partial observability hypothesis.
+The main result from this report concerns training and testing on multiple scenarios using our task invariant architecture. We found that transferring to an unseen scenario exhibited very poor performance (although performance was less poor when transferring to a smaller map). This is likely because of the ``out-of-distribution'' \cite{ood} problem: faced with a sample outside the training distribution, as neural network will generalise arbitrarily badly. This is particularly relevant to RNNs, where one observation difference in the entire history can lead to completely different hidden states. This also supports why we saw a slight improvement when transferring from larger to smaller maps: if the network has seen similar states, the transfer is more successful.
 
 
 
-Moreover, among our results were useful conclusions regarding the strength of various features of an agent architecture in this environment. We found that using actions as inputs into a convolutional encoder was an extremely successful technique, to the point that only a minimal observation input was required, since the action itself provided extremely valuable information.
+However, we found that multi-task learning was more successful, suggesting that this ``out-of-distribution'' problem is resolved through this style of learning. Furthermore, this indicates that a single network has a far greater capacity for learning than a single scenario. Moreover, this shows that the various tasks are in fact closely linked: we have shown that these scenarios can be played somewhat well by a generalisable architecture trained over each map, which supports our partial observability hypothesis.
+
+
 
 Finally, we found that the memory requirements for architectures utilising grid-based observations and actions to be extremely large (~5Gb per network, compared to under 1Gb for non-grid-based architectures for small maps). This is a major downfall of the approach, as it limits the size the map that can be trained upon, and increases the training time.
 
