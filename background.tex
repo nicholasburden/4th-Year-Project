@@ -10,10 +10,10 @@ A Markov Decision Process (MDP) is defined by its state and action sets and by t
   \item $A$ is a mapping from state $s$ to a set of actions,
   \item $P(s, a, s')$ is the probability that state $s$ will move to state $s'$when action $a$ is performed
   \item $R(s, a, s')$ is the immediate reward received after transitioning from state $s$ to $s'$, due to action $a$.
-\end{itemize}
+\end{itemize}  \cs{we usually add discount factor $\gamma\in[0,1]$ to the tuple}
 
 \end{definition}
-$R$ is referred to as the \textit{reward function}.
+$R$ is referred to as the \textit{reward function}. 
 
 \subsection{Reinforcement Learning}
 Reinforcement Learning (RL) is a paradigm of Machine Learning (ML) that attempts to solve a specified MDP (usually by maximising the total accrued reward in some way or another). RL aims to generate a \textit{policy} $\pi : S \to A$, where $S$ is the set of states and $A$ is the set of possible actions (the policy may also take the form of a probability distributions, mapping a state-action pair to a probability). This policy is developed during the training phase, and then can be used to choose each action during execution.
@@ -22,6 +22,7 @@ RL algorithms can be either model-based or model-free. In model-based RL, the ag
 
 In an RL algorithm we also specify a learning rate $\alpha$ and discount factor $\gamma \in [0,1]$. The learning rate specifies to what extent new information is prioritised over older information, so that with a learning rate of 0, the agent learns nothing new, but with a learning rate of 1, only the most recent experience is considered. The discount factor determines the importance of future rewards. A discount rate of 1 values a reward far in the future just as much as an immediate reward, but a discount factor of 0 only considers the immediate reward.
 
+\cs{what about introducing terminating vs continuing episodes (i.e. episode horizon)?}
 
 
 \subsection{Q-Learning}

@@ -1,14 +1,14 @@
 \subsection{Summary of Results}
 
-The main result from this report concerns training and testing on multiple scenarios using our task invariant architecture. We found that transferring to an unseen scenario exhibited very poor performance (although performance was less poor when transferring to a smaller map). This is likely because of the ``out-of-distribution'' \cite{ood} problem: faced with a sample outside the training distribution, as neural network will generalise arbitrarily badly. This is particularly relevant to RNNs, where one observation difference in the entire history can lead to completely different hidden states. This also supports why we saw a slight improvement when transferring from larger to smaller maps: if the network has seen similar states, the transfer is more successful.
+The main result from this report concerns training and testing on multiple scenarios using our task-invariant architecture. We found that transferring to an unseen scenario exhibited very poor performance (although performance was less poor when transferring to a smaller map). This is likely because of the ``out-of-distribution'' \cite{ood} problem: faced with a sample outside the training distribution, as neural network will generalise arbitrarily badly. This is particularly relevant to RNNs, where one observation difference in the entire history can lead to completely different hidden states. This also supports why we saw a slight improvement when transferring from larger to smaller maps: if the network has seen similar states, the transfer is more successful.
 
 
 
-However, we found that multi-task learning was more successful, suggesting that this ``out-of-distribution'' problem is resolved through this style of learning. Furthermore, this indicates that a single network has a far greater capacity for learning than a single scenario. Moreover, this shows that the various tasks are in fact closely linked: we have shown that these scenarios can be played somewhat well by a generalisable architecture trained over each map, which supports our partial observability hypothesis.
+However, we found that multi-task learning was more successful, suggesting that this ``out-of-distribution'' problem is resolved through this style of learning. Furthermore, this indicates that a single network has a far greater capacity for learning than a single scenario. Moreover, this shows that the various tasks are in fact closely linked: we have shown that these scenarios can be played somewhat well by a generalisable architecture trained over each map, which supports our partial observability hypothesis \cs{state what that hypothesis is, or reference where it is defined}.
 
 
 
-Finally, we found that the memory requirements for architectures utilising grid-based observations and actions to be extremely large (~5Gb per network, compared to under 1Gb for non-grid-based architectures for small maps). This is a major downfall of the approach, as it limits the size the map that can be trained upon, and increases the training time.
+Finally, we found that the memory requirements for architectures utilising grid-based observations and actions to be extremely large (~5Gb per network, compared to under 1Gb for non-grid-based architectures for small maps). This is a major downfall of the approach, as it limits the size the map that can be trained upon, and increases the training time \cs{Ok, but surely you could use a smaller replay buffer or even on-policy methos or otherwise mitigate the problem, or just lower grid resolution?}.
 
 
 
@@ -28,7 +28,7 @@ The QMIX mixing network is inherently dependent on the task: the number of input
 
 The terrain of a StarCraft II map (high ground and low ground) can be particularly important information to aid with micromanagement. For example, attacking from high ground allows units to not be seen by the enemy (until the enemy is attacked), so it is an advantageous position to be in.
 
-Currently, the agent architecture does not use this observation, but it would be useful to evaluate its effectiveness.
+Currently, the agent architecture does not use this observation\cs{it's not really due to the architecture, we just don't feed in the features}, but it would be useful to evaluate its effectiveness.
 
 
 \subsection{Personal Development}

@@ -57,9 +57,9 @@ We now perform the same baseline experiments on the 2s3z map. The results of thi
 Using the VDN mixing network, we can see both the conv and conv\_input\_flat architectures exhibit lesser performance when compared to the standard rnn architecture, while the conv\_input\_grid architecture matches its performance. This suggests that grid-based actions as inputs are more useful to an agent than grid based observations, and provide a superior insight into its environment.
 
 
-Using the QMIX mixing network, performance was higher on all architectures: each exhibited a large limit win rate and fast convergence. However, we clearly see that both the conv and conv\_input\_flat architectures unde-performed compared to the standard rnn network. This suggests that, in a more complex map with multiple types of units (such as 2s3z), if an architecture is using a convolutional encoder for grid based observations then it needs grid based actions as inputs to be effective. 
+Using the QMIX mixing network, performance was higher on all architectures: each exhibited a large limit win rate and fast convergence. However, we clearly see that both the conv and conv\_input\_flat architectures under-performed compared to the standard rnn network. This suggests that, in a more complex map with multiple types of units (such as 2s3z), if an architecture is using a convolutional encoder for grid based observations then it needs grid based actions as inputs to be effective. 
 
-There was increased variance in the performance on the 2s3z map when compared to the 3m map. This is likely due to the grid representation of observations, and the number different of units: the relationships between the agents (and enemies) is harder to capture on this map.
+There was increased variance in the performance on the 2s3z map when compared to the 3m map. This is likely due to the grid representation of observations, and the different numbers of units: the relationships between the agents (and enemies) is harder to capture on this map.
 
 \begin{figure}[h]
     \centering
@@ -79,7 +79,7 @@ The experiments will be performed using the same set up as before, and will take
 
 
 
-The grid sizes we will test are 6x6, 12x12, 18x18 and 24x24. This is because the convolutional encoder kernels (of size 3x3) are simply too large for an input of size smaller than 6x6, and recent tests show that grids larger than 24x24 run out of memory, even with small batch sizes. As described in section 3.4.2, some simple tests were run to find the optimal batch sizes for the different sizes of grid observations. Every other configuration parameter was kept the same for each experiment.
+The grid sizes we will test \cs{should not use future tense I think just present tense} are 6x6, 12x12, 18x18 and 24x24. This is because the convolutional encoder kernels (of size 3x3) are simply too large for an input of size smaller than 6x6, and recent tests show that grids larger than 24x24 run out of memory, even with small batch sizes. As described in section 3.4.2, some simple tests were run to find the optimal batch sizes for the different sizes of grid observations. Every other configuration parameter was kept the same for each experiment.
 
 
 
@@ -142,7 +142,7 @@ As we can see, especially on the 6x6 map, there is some drop in performance when
 \subsection{A Task Invariant Architecture}
 In this section we test our partial observability hypothesis that a successful task invariant architecture exists (enabled by the partial observability of StarCraft), particularly with the use of a CNN for the extraction of spatial information.
 
-The conv\_input\_grid architecture is task invariant, except for the input of agent IDs. This is input in order to allow the different agents to share network weights, with the ID being used by the network to distinguish between the agents. However, the RNN and new observation (and action) representation already encode this differentiaiton between agents: the observation is centralised around the agent, and the GRU-cell's `memory' is able to `remember' past observations, making the agents easy to tell apart. This suggests that the agent ID is a redundant input. We can therefore create a task invariant architecture, conv\_input\_grid\_no\_id, by removing this input.
+The conv\_input\_grid architecture is task invariant, except for the input of agent IDs. This is input in order to allow the different agents to share network weights, with the ID being used by the network to distinguish between the agents. However, the RNN and new observation (and action) representation already encode this differentiation between agents: the observation is centralised around the agent, and the GRU-cell's `memory' is able to `remember' past observations, making the agents easy to tell apart \cs{mention that trajectories cannot always be disambiguated though - actually, you should explicitly formulate this as a hypothesis namely whether RNNs can sufficiently differentiate trajectories in practice}. This suggests that the agent ID is a redundant input. We can therefore create a task invariant architecture, conv\_input\_grid\_no\_id, by removing this input.
 
 
 To test the redundancy of the agent ID, using the same experiment set up as before, on both the 3m and 2s3z maps. This allows us to see the effect of removing the agent ID input on both a simple map with one unit type, and a larger map with multiple unit types.
@@ -157,7 +157,7 @@ Figure \ref{fig:noid} shows the results of this experiment compared to the previ
 \end{figure}
 
 
-Clearly, the architecture suffered very little decrease in performance on both maps. Even though agents share network weights, these results suggest that the network can differentiate between the agents somehow, thus rendering the agent ID unnecessary. The network may be able to perform this differentiation through the use of its GRU-cell. Therefore, this result suggests that the recurrent nature of the architecture is necessary to distinguish between agents effectively, and therefore exhibit high performance in StarCraft. This is easily tested by removing the GRU-cell from the conv\_input\_grid\_no\_id architecture and performing the same experiment to measure performance. The result of this experiment is show in figure \ref{fig:rnnvsnonrnn}.
+Clearly, the architecture suffered very little decrease in performance on both maps. Even though agents share network weights, these results suggest that the network can differentiate between the agents somehow, thus rendering the agent ID unnecessary. The network may be able to perform this differentiation through the use of its GRU-cell. Therefore, this result suggests that the recurrent nature of the architecture is necessary to distinguish between agents effectively, and therefore exhibit high performance in StarCraft. This is easily tested by removing the GRU-cell from the conv\_input\_grid\_no\_id architecture and performing the same experiment to measure performance. The result of this experiment is shown in figure \ref{fig:rnnvsnonrnn}.
 
 \begin{figure}
     \centering
@@ -167,12 +167,12 @@ Clearly, the architecture suffered very little decrease in performance on both m
 \end{figure}
 
 
-We can see that, although performance has showed a small decrease, the network is still learning fairly effectively. Therefore it can be said that a GRU-cell is somewhat useful to the network, but there must be another feature of the architecture that allows it to distinguish between agents and learn effectively. 
+We can see that, despite a small decrease in performance, the network is still learning fairly effectively. Therefore it can be said that a GRU-cell is somewhat useful to the network, but there must be another feature of the architecture that allows it to distinguish between agents and learn effectively \cs{i think maybe the reason it can still learn is that the environment is not that indeterministic, hence we don't need to form proper belief states most of the time (which is what RNNs are supposed to do, see Hausknecht&Stone 2015)}. 
 
-The new representation of actions (which are input into the network) may even be rich enough to encode valuable information. Each available action is input into the network (in grid format), with each action being either attack or movement. Whilst the available movement actions generally give little information (an agent can almost always move in any direction), the available attack actions directly inform the network of where the enemies are (since each enemy is a single attack action).
+The new representation of actions (which are input into the network) may even be rich enough to encode valuable information by itself. Each available action is input into the network (in grid format), with each action being either attack or movement. Whilst the available movement actions generally give little information (an agent can almost always move in any direction), the available attack actions directly inform the network of where the enemies are (since each enemy corresponds to a unique attack action).
 
 
-To explore this idea further, we run experiments in the same way as before on the conv\_input\_grid\_no\_id architecture. However, we vary the amount of information included in the observation, from very rich to empty (note that we always pass an available action as an input, so even with an empty observation the network does receive an input). This allows us to clearly see the effect of each observation on performance, as well as to see the base level of performance provided by the input actions.
+To explore this idea further, we run experiments in the same way as before on the conv\_input\_grid\_no\_id architecture. However, we vary the amount of information included in the observation, from very rich to empty (note that we always pass available actions as input, so even with an empty observation the network does receive an input). This allows us to clearly see the effect of each observation on performance, as well as to see the base level of performance provided by the input actions.
 
 The level of observations we will use are shown below.
 
@@ -193,7 +193,7 @@ Ally or Enemy Unit? &  \centering\checkmark     &  \centering\checkmark      &  
 \end{tabular}
 \end{center}
 \vspace{3mm}
-
+ \cs{I would add a row with all boxes ticked at the bottom of the input table in fig 14 for available actions}
 
 
 The relative performance of the architecture with these level of observations can be seen in figure \ref{fig:obs}. 
@@ -201,11 +201,11 @@ The relative performance of the architecture with these level of observations ca
 \begin{figure}
     \centering
     \hbox{\hspace{5em}\includegraphics[scale=0.5]{images/graphs/obs.png}}
-    \caption{Mean test win rate of the conv\_input\_grid with various levels of observation detail. The shaded region shows one standard deviation above and below the mean. The only required observation feature appears to be ally\_or\_enemy (which distinguishes between ally and enemy units).}
+    \caption{Mean test win rate of the conv\_input\_grid with various levels of observation detail. The shaded region shows one standard deviation above and below the mean. The only required observation feature appears to be ally\_or\_enemy (which distinguishes between ally and enemy units) \cs{I don't understand how the labels in this figure fit together with the different rows of ticks in the table, maybe you can let the row headers correspond with the figure labels?}.}
     \label{fig:obs}
 \end{figure}
 
-As expected, an empty observation gives very poor performance: the network cannot seem to learn at all. Surprisingly, however, every other level of observation showed near identical performance, reaching at least a $95\%$ win rate after just 2 million timesteps. This suggests that the only observation that is necessary in this architecture is ally\_or\_enemy. An explanation for this is the fact that the network can derive very useful information from the input actions, such as enemy locations, but is not able to see allies without the ally\_or\_enemy observation. This prevents teamwork, and leads to uncoordinated, inferior play. 
+As expected, an empty observation gives very poor performance: the network cannot seem to learn at all. Surprisingly, however, every other level of observation showed near identical performance, reaching at least a $95\%$ win rate after just 2 million timesteps. This suggests that the only observation that is necessary in this architecture is ally\_or\_enemy. An explanation for this is the fact that the network can derive very useful information from the input actions, such as enemy locations, but is not able to see allies without the ally\_or\_enemy observation \cs{I don't understand this sentence}. This prevents teamwork, and leads to uncoordinated, inferior play. 
 
 
 
@@ -240,7 +240,7 @@ We see in figure \ref{fig:transfer6} that this is not the case. In fact, we see 
 
 The reason for this may be that the network has over-fitted the original map, and is no longer `plastic' enough to learn on another map. The time where no progress is made in the 3m to 5m transfer example can thus be characterised as a period of `undoing' the previous work, in order to be able to learn on this new map.
 
-To test this, we shall try again with networks that have not yet reached limit performance, but have shown some good progress, which is around 200,000 timesteps. At this point, the network is still very `plastic', and able to adapt to other maps, but still has learned a good insight into the game. This experiment is show in figure \ref{fig:transfer2}.
+To test this, we shall try again with networks that have not yet reached limit performance, but have shown some good progress, which is around 200,000 timesteps. At this point, the network is still very `plastic', and able to adapt to other maps, but still has learned a good insight into the game. This experiment is shown in figure \ref{fig:transfer2}.
 
 
 \begin{figure}[h]
@@ -252,7 +252,7 @@ To test this, we shall try again with networks that have not yet reached limit p
 
 We see a similar result: the warm-start of training does not provide any benefit. We do see an improvement in the 3m to 5m transfer case, as the network immediately starts to make progress, but it is still far below the performance of a fresh network.
 
-However, another observation that can be made is that transfers from larger maps to smaller maps are more successful than vice-versa. This is likely due to the fact that the agents in a larger map is trained on scenarios it will likely experience in a smaller map, but the converse is notnecessarily true.
+However, another observation that can be made is that transfers from larger maps to smaller maps are more successful than vice-versa. This is likely due to the fact that the agents in a larger map is trained on scenarios it will likely experience in a smaller map, but the converse is not necessarily true.
 
 
 A likely explanation for these results is that the input space is simply too different for a different map. Although the environment is partially observable, agents in different maps will observe a different number or enemies and allies a large amount of the time, especially if the observation radius includes all other enemies (which is very likely during the later, more important stages of the battle). 
@@ -283,3 +283,5 @@ When trained on 3m, 5m and 8m, we can see only a small drop in performance and i
 When trained on both 3m and 2s3z, we do see a significant decrease in performance (increased convergence time and variance) when compared to the performance of training on the individual maps. This is likely because each map has an entirely different set of unit types, and therefore the maps are not very similar. However, the limit of performance is still high, suggesting the network can effectively learn both maps simultaneously.
 
 Overall, under this new system of training on multiple maps simultaneously, we have shown that our task invariant architecture is able to learn across various tasks with some level of success, albeit with reduced performance in some cases. These results largely support our partial observability hypothesis, but the decrease in performance suggests there are some differences between the tasks that cause difficulty for a single network.
+
+\cs{how could we further test the partial observability hypothesis? could we e.g. toy with different observation radii?}
