@@ -1,4 +1,4 @@
-Reinforcement Learning (RL) is an extremely relevant area and successful approach to many modern problems \cs{vague first sentence. Better: Advances in RL have recently resulted in great advances across a number of difficult control tasks, such as autonomous driving etc (give a number of domains and references here)}. In recent years, great proficiency in complex tasks such as Atari games \cite{dqn} and Resource Management \cite{resourcemanagement} has been achieved using RL. These successes are important as the RL algorithms employed are general, and can easily be applied to other domains, while more traditional approaches to artificial intelligence (AI) are specific to the problem at hand. \cs{Mhh. I would restrict this to control tasks: DRL allows to solve high-dimensional control tasks end-to-end in a principled, tranferrable way.}
+Advances in Reinforcement Learning (RL) have recently resulted in great advances across a number of difficult control tasks, such as autonomous driving \cite{driving}, Atari games \cite{dqn} and Resource Management \cite{resourcemanagement}. Deep RL (DRL) allows us to solve high-dimensional control tasks end-to-end in a principled, transferable way.
 
 Multi-agent RL is a natural next step, where multiple agents must learn to cooperate or compete with one another. Within this project we are only concerned with cooperative multi-agent tasks. 
 
@@ -12,7 +12,13 @@ In some environments (in particular, StarCraft II), each agent may not be able t
 
 
 
-This project focuses on designing and evaluating multi-agent RL network architectures for StarCraft II, with the goal of making an architecture invariant to the scenario faced by the agent. We hypothesise that due to the partial observability of StarCraft II, scenarios involving similar units (but possibly a different number of them) look the same to a neural network trained on various tasks within the game. In this report, we refer to this hypothesis as the \textit{partial observability hypothesis}. A way to test this hypothesis is through evaluating an architectures performance on unseen tasks, which will form a significant part of the evaluation section of this project.
+This project focuses on designing and evaluating multi-agent RL network architectures for StarCraft II, with the goal of making an architecture invariant to the scenario faced by the agent. We make the following hypothesis:
+
+\begin{hyp}[Partial Observability Hypothesis] \label{hyp:first}
+Due to the partial observability of StarCraft II, scenarios involving similar units (but possibly a different number of them) look the same to a neural network trained on various tasks within the game.
+\end{hyp}
+
+A way to test this hypothesis is through evaluating an architectures performance on unseen tasks, which will form a significant part of the evaluation section of this project.
 
 Such task invariance is not seen in DeepMind's AlphaStar \cite{alphastar} (a Starcraft II AI using deep multi-agent RL), and would require a new approach to state and action abstraction, as well as comprehensive experiments to determine the viability of these approaches and compare their performance to standard approaches.
 
@@ -21,9 +27,9 @@ Such task invariance is not seen in DeepMind's AlphaStar \cite{alphastar} (a Sta
 
 StarCraft II is a real-time strategy video game developed by Blizzard Entertainment. It is a challenging game that has been played in e-sports tournaments for over 20 years.
 
-Games are generally played with one player against another \cs{Better: 2-player adversarial game}, each choosing to play as an alien race: Zerg, Protoss or Terran, with each having different characteristics. The game involves using workers to gather resources, which can make more units and buildings, as well as using other units to attack the enemy's units and buildings. In this way, a successful player is able to manage the long-term overall structure of their assets, know as macromanagement, as well as manage the lower level actions of individual units, know as micromanagement. This project will focus on micromanagement, as this is generally seen as a limiting factor for the competency of a player.
+Games are generally played as 2-player adversarial games, each player choosing to play as an alien race: Zerg, Protoss or Terran, with each having different characteristics. The game involves using workers to gather resources, which can make more units and buildings, as well as using other units to attack the enemy's units and buildings. In this way, a successful player is able to manage the long-term overall structure of their assets, know as macromanagement, as well as manage the lower level actions of individual units, know as micromanagement. This project will focus on micromanagement, as this is generally seen as a limiting factor for the competency of a player.
 
-The game is challenging for a number of reasons. Firstly, the state of the game is constantly altered by both players, so there is no ``best'' strategy \cs{mhh. not sure if that is true though, there might be dominating strategies particularly if you have badly balanced scenarios?}. This style of game requires constant adaptation to the opponent's moves, and the player must be responsive in this way to succeed. 
+The game is challenging for a number of reasons. Firstly, the state of the game is constantly altered by both players, so there is often no clear superior move. This style of game requires constant adaptation to the opponent's moves, and the player must be responsive in this way to succeed. 
 
 Furthermore, each unit suffers from a lack of information. In the implementation of the environment we will use, each agent has a limited field of view, so must make use of what it can, and has historically, observed. To overcome this problem, this project will explore the use of recurrent neural networks, which allow for past data to be used to make decisions relevant to the present moment
 

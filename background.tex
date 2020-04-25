@@ -10,7 +10,7 @@ A Markov Decision Process (MDP) is defined by its state and action sets and by t
   \item $A$ is a mapping from state $s$ to a set of actions,
   \item $P(s, a, s')$ is the probability that state $s$ will move to state $s'$when action $a$ is performed
   \item $R(s, a, s')$ is the immediate reward received after transitioning from state $s$ to $s'$, due to action $a$.
-\end{itemize}  \cs{we usually add discount factor $\gamma\in[0,1]$ to the tuple}
+\end{itemize}  
 
 \end{definition}
 $R$ is referred to as the \textit{reward function}. 
@@ -134,7 +134,12 @@ where $y^{DQN}=r+\gamma \max_{a'}Q(s',a';\theta^-)$ ($\theta^-$ are the paramete
 
 
 \subsection{Multi-Agent Reinforcement Learning}
-Multi-Agent Reinforcement Learning (MARL) is the process of learning policies for multiple co-operative (or adversarial) agents interacting in the same environment. In this project, we only consider co-operative agents. One paradigm of MARL is \textit{centralised learning with decentralised execution}, which allows for a single controller (which has access to the global state) to coordinate the learning of all agents, while during execution each agent operates independently using its learned policy.
+Multi-Agent Reinforcement Learning (MARL) is the process of learning policies for multiple co-operative (or adversarial) agents interacting in the same environment. In this project, we only consider co-operative agents. 
+
+
+\subsubsection{Centralised Training With Decentralised Execution}
+
+One paradigm of MARL is \textit{centralised learning with decentralised execution}, which allows for a single controller (which has access to the global state) to coordinate the learning of all agents, while during execution each agent operates independently using its learned policy. This way, learning benefits from the full environment state, including other agents' observations, while yielding decentralisable policies.
 
 \subsubsection{The StarCraft Multi-Agent Challenge}
 

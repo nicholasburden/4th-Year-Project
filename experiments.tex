@@ -79,7 +79,7 @@ The experiments will be performed using the same set up as before, and will take
 
 
 
-The grid sizes we will test \cs{should not use future tense I think just present tense} are 6x6, 12x12, 18x18 and 24x24. This is because the convolutional encoder kernels (of size 3x3) are simply too large for an input of size smaller than 6x6, and recent tests show that grids larger than 24x24 run out of memory, even with small batch sizes. As described in section 3.4.2, some simple tests were run to find the optimal batch sizes for the different sizes of grid observations. Every other configuration parameter was kept the same for each experiment.
+The grid sizes tested are 6x6, 12x12, 18x18 and 24x24. This is because the convolutional encoder kernels (of size 3x3) are simply too large for an input of size smaller than 6x6, and recent tests show that grids larger than 24x24 run out of memory, even with small batch sizes. As described in section 3.4.2, some simple tests were run to find the optimal batch sizes for the different sizes of grid observations. Every other configuration parameter was kept the same for each experiment.
 
 
 
@@ -142,7 +142,7 @@ As we can see, especially on the 6x6 map, there is some drop in performance when
 \subsection{A Task Invariant Architecture}
 In this section we test our partial observability hypothesis that a successful task invariant architecture exists (enabled by the partial observability of StarCraft), particularly with the use of a CNN for the extraction of spatial information.
 
-The conv\_input\_grid architecture is task invariant, except for the input of agent IDs. This is input in order to allow the different agents to share network weights, with the ID being used by the network to distinguish between the agents. However, the RNN and new observation (and action) representation already encode this differentiation between agents: the observation is centralised around the agent, and the GRU-cell's `memory' is able to `remember' past observations, making the agents easy to tell apart \cs{mention that trajectories cannot always be disambiguated though - actually, you should explicitly formulate this as a hypothesis namely whether RNNs can sufficiently differentiate trajectories in practice}. This suggests that the agent ID is a redundant input. We can therefore create a task invariant architecture, conv\_input\_grid\_no\_id, by removing this input.
+The conv\_input\_grid architecture is task invariant, except for the input of agent IDs. This is input in order to allow the different agents to share network weights, with the ID being used by the network to distinguish between the agents. However, the RNN and new observation (and action) representation already encode this differentiation between agents: the observation is centralised around the agent, and the GRU-cell's `memory' is able to `remember' past observations, making the agents easy to tell apart. This suggests that the agent ID is a redundant input. We can therefore create a task invariant architecture, conv\_input\_grid\_no\_id, by removing this input.
 
 
 To test the redundancy of the agent ID, using the same experiment set up as before, on both the 3m and 2s3z maps. This allows us to see the effect of removing the agent ID input on both a simple map with one unit type, and a larger map with multiple unit types.
@@ -157,7 +157,21 @@ Figure \ref{fig:noid} shows the results of this experiment compared to the previ
 \end{figure}
 
 
-Clearly, the architecture suffered very little decrease in performance on both maps. Even though agents share network weights, these results suggest that the network can differentiate between the agents somehow, thus rendering the agent ID unnecessary. The network may be able to perform this differentiation through the use of its GRU-cell. Therefore, this result suggests that the recurrent nature of the architecture is necessary to distinguish between agents effectively, and therefore exhibit high performance in StarCraft. This is easily tested by removing the GRU-cell from the conv\_input\_grid\_no\_id architecture and performing the same experiment to measure performance. The result of this experiment is shown in figure \ref{fig:rnnvsnonrnn}.
+Clearly, the architecture suffered very little decrease in performance on both maps. Even though agents share network weights, these results suggest that the network can differentiate between the agents somehow, thus rendering the agent ID unnecessary. 
+
+
+\subsubsection{Agent Differentiation}
+
+The network may be able to perform this differentiation through the use of its GRU-cell.
+
+We can therefore make the following hypothesis:
+
+\begin{hyp}[Agent Differentiation] \label{hyp:second}
+In a non-recurrent network, two action-observation histories arising from two different agents may not be able to be locally disambiguated from the network's input, leading to reduced performance
+\end{hyp}
+
+
+Hypothesis 2 is easily tested by removing the GRU-cell from the conv\_input\_grid\_no\_id architecture and performing the same experiment to measure performance. The result of this experiment is shown in figure \ref{fig:rnnvsnonrnn}.
 
 \begin{figure}
     \centering
@@ -167,33 +181,35 @@ Clearly, the architecture suffered very little decrease in performance on both m
 \end{figure}
 
 
-We can see that, despite a small decrease in performance, the network is still learning fairly effectively. Therefore it can be said that a GRU-cell is somewhat useful to the network, but there must be another feature of the architecture that allows it to distinguish between agents and learn effectively \cs{i think maybe the reason it can still learn is that the environment is not that indeterministic, hence we don't need to form proper belief states most of the time (which is what RNNs are supposed to do, see Hausknecht&Stone 2015)}. 
+We can see that, despite a small decrease in performance, the network is still learning fairly effectively. A likely reason for  this result is that the environment is largely deterministic. This means that the architecture does not need to formulate extensive belief states, which is where RNNs are extremely useful \cite{beliefstate}. 
 
-The new representation of actions (which are input into the network) may even be rich enough to encode valuable information by itself. Each available action is input into the network (in grid format), with each action being either attack or movement. Whilst the available movement actions generally give little information (an agent can almost always move in any direction), the available attack actions directly inform the network of where the enemies are (since each enemy corresponds to a unique attack action).
+This result suggests that Hypothesis 2 is invalid, since the lack of agent disambiguation (in the non-recurrent network) does not appear to be a bottleneck for performance in these tasks.
 
+\subsubsection{Network Inputs}
 
-To explore this idea further, we run experiments in the same way as before on the conv\_input\_grid\_no\_id architecture. However, we vary the amount of information included in the observation, from very rich to empty (note that we always pass available actions as input, so even with an empty observation the network does receive an input). This allows us to clearly see the effect of each observation on performance, as well as to see the base level of performance provided by the input actions.
+It is important for us to understand which observations are required for good performance. To do this, we run experiments in the same way as before on the conv\_input\_grid\_no\_id architecture. However, we vary the amount of information included in the observation, from very rich to empty (note that we always pass available actions as input, so even with an empty observation the network does receive an input). This allows us to clearly see the effect of each observation on performance, as well as to see the base level of performance provided by the input actions.
 
-The level of observations we will use are shown below.
+The level of observations we will use are shown below. The rows headers are the names of the observation levels, and the columns headers are observation features. Note that an available action is always included as an input to the network (although strictly is not an observation, but is included here for clarity).
 
 \vspace{3mm}
 \begin{center}
 \begin{tabular}{|l|l|l|l|l|l|} 
 \hline
-              & Full & No ID & No ID or Unit Type & Only Ally or Enemy & Empty  \\ 
+              & Agent ID & Unit Type & Health & Only Ally or Enemy Unit? & Available Action  \\ 
 \hline
-Agent ID      &  \centering\checkmark    &       &                    &                    &        \\ 
+Full      &  \centering\checkmark    &    \checkmark   &          \checkmark          &    \checkmark                &       \checkmark \\ 
 \hline
-Unit Type     &  \centering\checkmark     &  \centering\checkmark      &                    &                    &        \\ 
+No ID    &    &  \centering\checkmark      &    \checkmark                   &         \checkmark              &     \checkmark      \\ 
 \hline
-Health        & \centering\checkmark      &  \centering\checkmark      & \centering\checkmark                    &                    &        \\ 
+No ID or Unit Type        &       &       & \centering\checkmark                    &     \checkmark                  &\checkmark           \\ 
 \hline
-Ally or Enemy Unit? &  \centering\checkmark     &  \centering\checkmark      &  \centering\checkmark                   &       \centering\checkmark              &        \\
+Only Ally or Enemy &     &        &                   &       \centering\checkmark              &    \checkmark       \\
+\hline
+Empty &       &      &                   &                  &  \checkmark\\
 \hline
 \end{tabular}
 \end{center}
 \vspace{3mm}
- \cs{I would add a row with all boxes ticked at the bottom of the input table in fig 14 for available actions}
 
 
 The relative performance of the architecture with these level of observations can be seen in figure \ref{fig:obs}. 
@@ -205,7 +221,7 @@ The relative performance of the architecture with these level of observations ca
     \label{fig:obs}
 \end{figure}
 
-As expected, an empty observation gives very poor performance: the network cannot seem to learn at all. Surprisingly, however, every other level of observation showed near identical performance, reaching at least a $95\%$ win rate after just 2 million timesteps. This suggests that the only observation that is necessary in this architecture is ally\_or\_enemy. An explanation for this is the fact that the network can derive very useful information from the input actions, such as enemy locations, but is not able to see allies without the ally\_or\_enemy observation \cs{I don't understand this sentence}. This prevents teamwork, and leads to uncoordinated, inferior play. 
+As expected, an empty observation gives very poor performance; the network cannot seem to learn at all. Surprisingly, however, every other level of observation showed near identical performance, reaching at least a $95\%$ win rate after just 2 million timesteps. This suggests that the only observation that is necessary for high performance in this architecture is ally\_or\_enemy: an effective strategy of every agent shooting the same target can be performed using only this observation.
 
 
 
