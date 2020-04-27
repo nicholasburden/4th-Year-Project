@@ -299,5 +299,3 @@ When trained on 3m, 5m and 8m, we can see only a small drop in performance and i
 When trained on both 3m and 2s3z, we do see a significant decrease in performance (increased convergence time and variance) when compared to the performance of training on the individual maps. This is likely because each map has an entirely different set of unit types, and therefore the maps are not very similar. However, the limit of performance is still high, suggesting the network can effectively learn both maps simultaneously.
 
 Overall, under this new system of training on multiple maps simultaneously, we have shown that our task invariant architecture is able to learn across various tasks with some level of success, albeit with reduced performance in some cases. These results largely support our partial observability hypothesis, but the decrease in performance suggests there are some differences between the tasks that cause difficulty for a single network.
-
-\cs{how could we further test the partial observability hypothesis? could we e.g. toy with different observation radii?}

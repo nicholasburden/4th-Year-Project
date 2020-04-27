@@ -22,10 +22,11 @@ RL algorithms can be either model-based or model-free. In model-based RL, the ag
 
 In an RL algorithm we also specify a learning rate $\alpha$ and discount factor $\gamma \in [0,1]$. The learning rate specifies to what extent new information is prioritised over older information, so that with a learning rate of 0, the agent learns nothing new, but with a learning rate of 1, only the most recent experience is considered. The discount factor determines the importance of future rewards. A discount rate of 1 values a reward far in the future just as much as an immediate reward, but a discount factor of 0 only considers the immediate reward.
 
-\cs{what about introducing terminating vs continuing episodes (i.e. episode horizon)?}
+It is important to distinguish between finite-horizon, indefinite-horizon and infinite-horizon tasks: (1) finite-horizon tasks, in which interaction terminates after a particular fixed number of time steps; (2) indefinite-horizon tasks, in which interaction can last arbitrarily long but must eventually terminate; and (3) infinite-horizon tasks, in which interaction does not terminate \cite{RLAnIntro}. Tasks in StarCraft II are indefinite-horizon tasks.
 
 
-\subsection{Q-Learning}
+
+\subsubsection{Q-Learning}
 The Q-learning algorithm maintains a state-action value function $Q : S \times A \to \mathbb{R}$ which specifies the quality of performing an action $a$ when in state $s$ and then following policy $\pi$. This value represents the discounted expected return of choosing action $a$ in state $s$. The algorithm typically gives the policy (which is independent of Q-learning) in accordance with the $\epsilon$-greedy action choice method:
 
 
@@ -133,7 +134,7 @@ where $y^{DQN}=r+\gamma \max_{a'}Q(s',a';\theta^-)$ ($\theta^-$ are the paramete
 
 
 
-\subsection{Multi-Agent Reinforcement Learning}
+\subsection{Deep Multi-Agent Reinforcement Learning}
 Multi-Agent Reinforcement Learning (MARL) is the process of learning policies for multiple co-operative (or adversarial) agents interacting in the same environment. In this project, we only consider co-operative agents. 
 
 

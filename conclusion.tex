@@ -6,7 +6,7 @@ The main result from this report concerns training and testing on multiple scena
 
 However, we found that multi-task learning was more successful, suggesting that this ``out-of-distribution'' problem is resolved through this style of learning. Furthermore, this indicates that a single network has a far greater capacity for learning than a single scenario. Moreover, this shows that the various tasks are in fact closely linked: we have shown that these scenarios can be played somewhat well by a generalisable architecture trained over each map, which supports our partial observability hypothesis (Hypothesis 1).
 
-
+Furthermore, we found that disambiguation of agents' action-observation histories is not a bottleneck for performance (in the tasks experimented upon). Even with no mechanism for this disambiguation (i.e. without an agent ID as an input, and without a recurrent unit), fairly high performance was still achieved.
 
 Finally, we found that the memory requirements for architectures utilising grid-based observations and actions to be extremely large (~5Gb per network, compared to under 1Gb for non-grid-based architectures for small maps). This is a major downfall of the approach, as it limits the size the map that can be trained upon, and increases the training time. This may require the use of a smaller replay buffer or grid resolution, which may decrease performance.
 
