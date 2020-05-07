@@ -2,9 +2,11 @@
 
 
 \subsection{Markov Decision Processes}
+Markov Decision Processes (MDPs) are a mathematical framework for decision making, and are especially useful for studying problems solved by RL techniques. An MDP is defined by its state and action sets and by the one-step dynamics of the environment \cite{RLAnIntro}.
+
 \begin{definition}
 
-A Markov Decision Process (MDP) is defined by its state and action sets and by the one-step dynamics of the environment \cite{RLAnIntro}. This is represented as a 4-tuple $(S, A_{s}, P, R)$, where
+A Markov Decision Process (MDP) is represented as a 4-tuple $(S, A_{s}, P, R)$, where
 \begin{itemize}
   \item $S$ is a finite set of states,
   \item $A$ is a mapping from state $s$ to a set of actions,
@@ -16,18 +18,18 @@ A Markov Decision Process (MDP) is defined by its state and action sets and by t
 $R$ is referred to as the \textit{reward function}. 
 
 \subsection{Reinforcement Learning}
-Reinforcement Learning (RL) is a paradigm of Machine Learning (ML) that attempts to solve a specified MDP (usually by maximising the total accrued reward in some way or another). RL aims to generate a \textit{policy} $\pi : S \to A$, where $S$ is the set of states and $A$ is the set of possible actions (the policy may also take the form of a probability distributions, mapping a state-action pair to a probability). This policy is developed during the training phase, and then can be used to choose each action during execution.
+Reinforcement Learning (RL) is a paradigm of Machine Learning (ML) that attempts to solve a specified MDP (usually by maximising the total accrued reward in some way). RL aims to generate a \textit{policy} $\pi : S \to A$, where $S$ is the set of states and $A$ is the set of possible actions (the policy may also take the form of a probability distributions, mapping a state-action pair to a probability). This policy is developed during the training phase, and then can be used to choose each action during execution.
 
 RL algorithms can be either model-based or model-free. In model-based RL, the agent internally represents the environment in order to be able to predict subsequent states. In model-free RL the agent has no access to a model of the environment. Every RL algorithm discussed in this paper will be model-free.
 
-In an RL algorithm we also specify a learning rate $\alpha$ and discount factor $\gamma \in [0,1]$. The learning rate specifies to what extent new information is prioritised over older information, so that with a learning rate of 0, the agent learns nothing new, but with a learning rate of 1, only the most recent experience is considered. The discount factor determines the importance of future rewards. A discount rate of 1 values a reward far in the future just as much as an immediate reward, but a discount factor of 0 only considers the immediate reward.
+In an RL algorithm we also specify a learning rate $\alpha \in (0,1]$ and discount factor $\gamma \in [0,1]$. The learning rate specifies the step size at each iteration of the algorithm, while the discount factor determines the importance of future rewards. A discount rate of 1 values a reward far in the future just as much as an immediate reward, but a discount factor of 0 only considers the immediate reward.
 
 It is important to distinguish between finite-horizon, indefinite-horizon and infinite-horizon tasks: (1) finite-horizon tasks, in which interaction terminates after a particular fixed number of time steps; (2) indefinite-horizon tasks, in which interaction can last arbitrarily long but must eventually terminate; and (3) infinite-horizon tasks, in which interaction does not terminate \cite{RLAnIntro}. Tasks in StarCraft II are indefinite-horizon tasks.
 
 
 
 \subsubsection{Q-Learning}
-The Q-learning algorithm maintains a state-action value function $Q : S \times A \to \mathbb{R}$ which specifies the quality of performing an action $a$ when in state $s$ and then following policy $\pi$. This value represents the discounted expected return of choosing action $a$ in state $s$. The algorithm typically gives the policy (which is independent of Q-learning) in accordance with the $\epsilon$-greedy action choice method:
+The Q-learning algorithm maintains a state-action value function $Q : S \times A \to \mathbb{R}$ which specifies the quality of performing an action $a$ when in state $s$ (and then following the corresponding policy $\pi$). This value represents the discounted expected return of choosing action $a$ in state $s$. The algorithm typically gives the policy (which is independent of Q-learning) in accordance with the $\epsilon$-greedy action choice method:
 
 
 \[ \pi(s) = \begin{cases} 
@@ -51,7 +53,7 @@ In standard Q-learning, the $Q$ function is stored as a table (a \textit{Q-table
 
 \subsection{Neural Networks}
 
-Neural networks aim to approximate a mathematical function. The network consists of multiple layers of artificial neurons which linearly combine inputs and uses an \textit{activation function} (which is typically non-linear) to compute an output. The outputs of each neuron in a particular layer form the inputs of each neuron in the next layer. More formally, we represent the weights of a layer $l$ by matrix $\boldsymbol{W}^l$, so that for neuron $i$ in layer $l$, the weight of the input from neuron $j$ from layer $l-1$ is $\boldsymbol{W}^l_{ij}$. We represent the biases of layer $l$ by vector $\boldsymbol{b}^l$, so that for neuron $i$, the value $\boldsymbol{b}^l_i$ is added to the result of the linear operation. Therefore, we can define the activations of a layer $l$ \cite{csmlnotes}, $\boldsymbol{a}^{l}$:
+Neural networks aim to approximate a mathematical function. The network consists of multiple layers of artificial neurons which linearly combine inputs and uses an \textit{activation function} (which is typically non-linear) to compute an output. The outputs of each neuron in a particular layer form the inputs of each neuron in the next layer. More formally, we represent the weights of a layer $l$ by matrix $\boldsymbol{W}^l$, so that for neuron $i$ in layer $l$, the weight of the input from neuron $j$ in layer $l-1$ is $\boldsymbol{W}^l_{ij}$. We represent the biases of layer $l$ by vector $\boldsymbol{b}^l$, so that for neuron $i$, the value $\boldsymbol{b}^l_i$ is added to the result of the linear operation. Therefore, we can define the activations (represented by the column vector $\boldsymbol{a}^{l}$) of a layer $l$ \cite{csmlnotes}:
 
 \[
 \boldsymbol{z}^l = \boldsymbol{W}^l \boldsymbol{a}^{l-1} + \boldsymbol{b}^l
@@ -59,7 +61,7 @@ Neural networks aim to approximate a mathematical function. The network consists
 \[
 \boldsymbol{a}^{l} = f(\boldsymbol{z}^{l})
 \]
-where $f$ is the non-linear activation function.
+where $f$ is the activation function.
 
 The input of the network is $\boldsymbol{a}^0 = \boldsymbol{x}$, and the output of the network is $\boldsymbol{y} = \boldsymbol{a}^L$, where $L$ is the number of layers.
 
@@ -76,7 +78,7 @@ A loss function is a mapping from a set of values to a real number in order to r
 
 
 \subsubsection{Convolutional Neural Networks}
-Convolution Neural Networks (CNNs) use a convolution operation: a linear operation in place of matrix multiplication found in standard neural networks \cite{cnn}. This convolution operation consists of a \textit{kernel} (a small tensor) that performs dot products over the input tensor in accordance with parameters such as stride and padding. The \textit{stride} of a convolution is how much the kernel moves between dot products, and \textit{padding} indicates how many layers of zeroes to add to the border of the input tensor \cite{cnn}. The convolution operation is illustrated in figure \ref{fig:cnn}.
+Convolutional Neural Networks (CNNs) use a convolution operation: a linear operation in place of matrix multiplication found in standard neural networks \cite{cnn}. This convolution operation consists of a \textit{kernel} (a small tensor) that performs dot products over the input tensor in accordance with parameters such as stride and padding. The \textit{stride} of a convolution is how much the kernel moves between dot products, and \textit{padding} indicates how many layers of zeroes to add to the border of the input tensor \cite{cnn}. The convolution operation is illustrated in figure \ref{fig:cnn}.
 
 \begin{figure}
     \centering
@@ -85,31 +87,31 @@ Convolution Neural Networks (CNNs) use a convolution operation: a linear operati
     \label{fig:cnn}
 \end{figure}
 
-To make this more formal, consider this formalisation from \cite{csmlnotes}:
+Consider this formalisation from \cite{csmlnotes}:
 
-Suppose we apply $F_{l+1}$ filters, each of shape $W_f \times H_f \times F_t$, then we can write the entries $z_{i',j',f'}^{l+1}$ in this layer as follows (we assume no zero-padding and stride of 1 in each direction):
+Suppose we apply $F_{l+1}$ filters, each of shape $W_f \times H_f \times F_l$, then we can write the entries $z_{i',j',f'}^{l+1}$ in this layer as follows (we assume no zero-padding and stride of 1 in each direction):
 
 
 
  \[z_{i',j',f'}^{l+1} = b^{l+1,f'} + \sum_{i=1}^{W_{f'}}\sum_{j=1}^{H_{f'}}\sum_{f=1}^{F_l}a^l_{i'+i-1,j'+j-1,f} w^{l+1,f'}_{i,j,f}
  \]
  
- Above $w^{l+1,f'}_{i,j,f}$ is the parameter for the $f$'th filter between layers $l$ and $l+1$ indexed by $(i,j,f)$ \cite{csmlnotes}.
+ Above, $w^{l+1,f'}_{i,j,f}$ is the parameter for the $f'$th filter between layers $l$ and $l+1$ indexed by $(i,j,f)$ \cite{csmlnotes}.
  
  
  
-Other operations, such as pooling, can be used in a CNN. \textit{pooling} refers to the idea of reducing the size of a tensor (usually after a convolutional layer) using a mathematical operation \cite{cnn}.
+Other operations, such as pooling, can be used in a CNN. \textit{Pooling} refers to the idea of reducing the size of a tensor (usually after a convolutional layer) using a mathematical operation \cite{cnn}, such as an average of local values.
 
 \subsubsection{Recurrent Neural Networks}
-Recurrent Neural Networks (RNNs) are a class of neural network that is able to ``remember'' previous inputs using an internal state \cite{rnn}, allowing it to deal with sequential inputs (unlike a standard neural network which does not maintain an internal state). For long time-series data an RNN can suffer from the \textbf{vanishing gradient problem} \cite{rnn} which occurs when the gradient of the loss function approaches zero, thus reducing the changes made to weights and severely limits its ability to train. 
+Recurrent Neural Networks (RNNs) are a class of neural network that are able to ``remember'' previous inputs using an internal state \cite{rnn}, allowing it to deal with sequential inputs (unlike a standard neural network which does not maintain an internal state). For long time-series data an RNN can suffer from the \textbf{vanishing gradient problem} \cite{rnn} which occurs when the gradient of the loss function approaches zero, thus reducing the changes made to weights and severely limits its ability to train. 
 
 A solution for this problem in RNNs is to use a Gated Recurrent Unit (GRU) \cite{gru} which have operations update-gate and reset-gate which are used to filter the amount of passed information to consider. 
 
 Another popular architecture is the LSTM \cite{lstm}, which is similar to the GRU architecture, but provides a forget gate, which regulates the amount of information to be ``forgotten'', and an output gate which decides on the next hidden state \cite{lstm}.
 
-LSTMs and GRUs have both exhibited similar performance in natural language processing tasks \cite{lstmvsgru}, so we will only consider the use of GRU-cells in the architectures of this project.
+LSTMs and GRUs have both exhibited similar performance in natural language processing tasks \cite{lstmvsgru}.
 
-Figure \ref{fig:rnn} shows the of the LSTM and GRU architectures.
+Figure \ref{fig:rnn} outlines the LSTM and GRU architectures.
 
 \begin{figure}
     \centering
@@ -120,31 +122,31 @@ Figure \ref{fig:rnn} shows the of the LSTM and GRU architectures.
 
 \subsection{Deep Reinforcement Learning}
 
-Deep RL refers to the use of neural networks within an RL algorithm to approximate some function. In the case of Q-learning in the previous section, a neural network can be used to approximate the state-action value function, $Q$. This modified algorithm is called deep Q-learning (DQN) \cite{dqn}.
+Deep RL refers to the use of neural networks within an RL algorithm to approximate some function. In the case of Q-learning in the previous section, a neural network can be used to approximate the state-action value function $Q$. This modified algorithm is called deep Q-learning (DQN) \cite{dqn}.
 
 In DQN, the neural network eliminates the need for storing a Q-table, significantly reducing the memory requirements. The neural network is better able to approximate state-action values that have not been seen before (but may be similar to those observed previously), allowing for better performance.
 
-Experience replay \cite{expeirnecereplay} is the technique of storing the agent's experiences at each timestep ($e_t = (s_t, a_t, r_t, s_{t+1})$) in a dataset $D = e_1..., e_N$ called the replay memory \cite{dqn}.
+Experience replay \cite{expeirnecereplay} is the technique of storing the agent's experiences at each timestep in a dataset $D = e_1..., e_N$ called the replay memory \cite{dqn}. Each experience is a 4-tuple $e_t = (s_t, a_t, r_t, s_{t+1})$, where $s_t$ is the state at time $t$, $a_t$ is the action performed to transition from $s_t$ to $s_{t+1}$, and $r_t$ is the reward for the transition.
 
-As described in \cite{qmixcite}, the weights and biases of the network are learnt by sampling batches of the replay memory and minimising the \textit{TD error}:
+As described in \cite{qmixcite}, the weights and biases of the network are learned by sampling batches of the replay memory and minimising the \textit{TD error}:
 
 \[\mathscr{L}(\theta)=\sum_{i=1}^{b}[(y_i^{DQN}-Q(s,a;\theta))^2]\]
 
-where $y^{DQN}=r+\gamma \max_{a'}Q(s',a';\theta^-)$ ($\theta^-$ are the parameters for a \textit{target network} that are updated using $\theta$ periodically) \cite{qmixcite}.
+Where $y^{DQN}=r+\gamma \max_{a'}Q(s',a';\theta^-)$ ($\theta^-$ are the parameters for a \textit{target network} that are updated using $\theta$ periodically) \cite{qmixcite}.
 
 
 
-\subsection{Deep Multi-Agent Reinforcement Learning}
-Multi-Agent Reinforcement Learning (MARL) is the process of learning policies for multiple co-operative (or adversarial) agents interacting in the same environment. In this project, we only consider co-operative agents. 
+\subsection{Multi-Agent Reinforcement Learning}
+Multi-Agent Reinforcement Learning (MARL) is the process of learning policies for multiple cooperative (or adversarial) agents interacting in the same environment. In this project, we only consider cooperative agents. 
 
 
 \subsubsection{Centralised Training With Decentralised Execution}
 
-One paradigm of MARL is \textit{centralised learning with decentralised execution}, which allows for a single controller (which has access to the global state) to coordinate the learning of all agents, while during execution each agent operates independently using its learned policy. This way, learning benefits from the full environment state, including other agents' observations, while yielding decentralisable policies.
+One paradigm often utilised with MARL is \textit{centralised learning with decentralised execution}, which allows for a single controller (which has access to the global state) to coordinate the learning of all agents, while during execution each agent operates independently using its learned policy. This way, learning benefits from the full environment state, including other agents' observations, while yielding decentralisable policies.
 
 \subsubsection{The StarCraft Multi-Agent Challenge}
 
-Recent progress in MARL has seen the need for a benchmark of performance, including a specific environment and method for quantifying performance. A popular benchmark fitting this description is the StarCraft Multi-Agent Challenge (SMAC) \cite{smac}. SMAC is based upon the science-fiction real-time strategy game StarCraft II in which teams of various units battle against one another. Although the game is far more complex than this (with resource management, buildings as well as other considerations), SMAC only considers situations of this form. Each unit is controlled by a single agent, and SMAC specifies various maps (the number and type of the units on either team) as well as allowing control over the difficulty of the AI controlling the opposing team. 
+Recent progress in MARL has seen the need for a benchmark of performance, including a specific environment and method for quantifying performance. A popular benchmark fitting this description is the StarCraft Multi-Agent Challenge (SMAC) \cite{smac}. SMAC is based upon the science-fiction real-time strategy game StarCraft II in which teams of various units battle against one another. Although the game is far more complex than this (with resource management, buildings, as well as other considerations), SMAC only considers micromanagement tasks. Each unit is controlled by a single agent, and SMAC specifies various maps (the number and type of the units on either team) as well as allowing control over the difficulty of the AI controlling the opposing team. 
 
 
 In SMAC (and in this project) we consider the following unit types:
@@ -167,13 +169,26 @@ In SMAC (and in this project) we consider the following unit types:
 \vspace{3mm}
 
 
+
+\begin{figure}
+    \centering
+    \hbox{\hspace{3.2em}\includegraphics[scale = 0.5]{images/better.png}}
+    \caption{StarCraft II units. Left to right: Marine, Stalker, Zealot. Image source: liquipedia.net (accessed May 2020).}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \hbox{\hspace{-0.7em}\includegraphics[scale = 0.35]{images/5mand2s3z.png}}
+    \caption{Various SMAC micromanagemnet scenarios. Left: 5 Marines map. Right: 2 Stalkers and 3 Zealots map. Image source: \cite{qmixcite}}
+\end{figure}
+
 \subsubsection{Dec-POMDPs}
-A decentralised partially observable Markov decision process (dec-POMDP) is an extension of a regular MDP for use in multi-agent reinforcement learning. 
+A Decentralised Partially Observable Markov Decision Process (dec-POMDP) is an extension of a regular MDP for use in multi-agent reinforcement learning. 
 
 As described in \cite{dec-pomdp}, we can define a dec-POMDP as follows:
 \begin{definition}\textbf{\normalfont{\cite{dec-pomdp}}}{ (Dec-POMDP)}
-A decentralised partially observable Markov decision
-process is defined as a tuple $\mathscr{M} = \langle \mathbb{D,S,A},T,\mathbb{O},O,R,b_0\rangle$, where
+A Decentralised Partially Observable Markov Decision
+Process is defined as a tuple $\mathscr{M} = \langle \mathbb{D,S,A},T,\mathbb{O},O,R,b_0\rangle$, where
 \begin{itemize}
     \item $\mathbb{D}=\{1,...,n\}$ is the set of n agents.
     \item $\mathbb{S}$ is a (finite) set of states.
@@ -190,7 +205,7 @@ process is defined as a tuple $\mathscr{M} = \langle \mathbb{D,S,A},T,\mathbb{O}
 At each time step (with the environment in state $s \in \mathbb{S}$), each agent $d \in \mathbb{D}$ will choose an action $a^d$ (to form the joint action $\textbf{a} \in \mathbb{A}$) and will transition to a new state $s'$ with probability $T(s'|s,\textbf{a})$. Each agent will receive the reward $R(s, \textbf{a})$. Individual observations $o^d$ are made by each agent to form the joint observation $\textbf{o} \in \mathbb{O}$. A joint observation \textbf{o} occurs with probability $O(\textbf{o})$. There is an action-observation history $\tau^d \in (\mathbb{A} \times \mathbb{O})^*$ for each agent $d \in \mathbb{D}$. This conditions a stochastic policy $\pi^d(a^d|\tau^d) : (\mathbb{A} \times \mathbb{O})^* \times \mathbb{A} \to [0, 1]$. Intuitively, the policy $\pi^d$ gives the probability that a particular action $a^d$ is taken, given an action-observation history $\tau^d$, for agent $d$.
 
 \subsubsection{Independent Q-Learning}
-Independent Q-learning \cite{IQL} is a simple extension of Q-learning to the multi-agent setting. The problem is decomposed into multiple agents, each employing Q-learning independently, sharing the same environment. Although this technique does not account for the non-stationarity of sharing the same environment, it is surprisingly effective in practise \cite{iqlisgood}. 
+Independent Q-learning \cite{IQL} is a simple extension of Q-learning to the multi-agent setting. The problem is decomposed into multiple agents, each employing Q-learning independently, sharing the same environment. Although this technique does not account for the non-stationarity of sharing the same environment, it is surprisingly effective in practice \cite{iqlisgood}. 
 
 
 \subsubsection{Value Decomposition Networks}
@@ -200,7 +215,7 @@ Value Decomposition Networks \cite{vdn} (VDN), by contrast, aim to learn a joint
 
 where $\boldsymbol{\tau}$ is the joint observation history, $\textbf{a}$ is the joint action, $Q_i$ is the utility function for agent $i$ and $\theta^i$ are the parameters for agent $i$'s network.
 
-Q is then learnt in the same way as DQN, but during execution this policy is very easy to decentralise (each agent chooses greedily with respect to its own $Q_i$).
+Q is then learned in the same way as DQN, but during execution this policy is very easy to decentralise (each agent chooses greedily with respect to its own $Q_i$).
 
 This follows the \textit{centralised learning with decentralised execution} paradigm.
 
@@ -223,7 +238,7 @@ performed on each $Q_a$:
 
 QMIX represents $Q_{tot}$ using an architecture
 consisting of agent networks, a mixing network, and a set
-of hypernetworks \cite{hypernetworks} \cite{qmixcite}. Each agent has its own deep recurrent Q-network (DRQN) \cite{dqrn},the outputs of which are fed into the mixing network: a feed-forward neural network that mixes them
+of hypernetworks \cite{hypernetworks} \cite{qmixcite}. Each agent has its own deep recurrent Q-network (DRQN) \cite{dqrn}, the outputs of which are fed into the mixing network: a feed-forward neural network that mixes them
 monotonically, producing the values of $Q_{tot}$ \cite{qmixcite}. The weights of the mixing network are produced by separate hypernetworks \cite{qmixcite}.
 
 An overview of the networks can be seen in figure \ref{fig:qmix}, but further details can be found in \cite{qmixcite}.

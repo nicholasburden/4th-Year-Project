@@ -1,8 +1,8 @@
-To evaluate the performance of each architecture, a number of experiments are carried out. These experiments take the form of training the networks on a particular map, and testing the model every so often by measuring the win rate.
+To evaluate the performance of each architecture, a number of experiments are carried out. These experiments take the form of training the networks on a particular map, and testing the model every so often by measuring the win rate against the built-in AI.
 
 \subsection{Experimental Setup}
 
-The particular maps contain a set of units for either team, with one team composed of the agents, and the other controlled by the built-in AI on ``very hard'' difficulty (which is the hardest built-in non-cheating AI difficulty).
+The particular maps contain a set of units for either team, with one team composed of the agents, and the other controlled by the built-in AI on ``very hard'' difficulty (which is the hardest built-in non-cheating AI difficulty). This is the same difficulty that is used in \cite{smac}.
 
 The specific maps we will use in experiments are shown in the table below.
 
@@ -11,60 +11,62 @@ The specific maps we will use in experiments are shown in the table below.
  \hline
  \centering Map Name& \centering Description\tabularnewline
  \hline
- \centering 3m   & 3 marines on each team\\
+ \centering 3m   & 3 Marines on each team\\
  \hline
- \centering 5m   & 5 marines on each team\\
+ \centering 5m   & 5 Marines on each team\\
  \hline
- \centering 2s3z   & 2 stalkers and 3 zealots on each team\\
+ \centering 8m   & 8 Marines on each team\\
  \hline
- \centering 3s5z   & 3 stalkers and 5 zealots on each team\\
+ \centering 2s3z   & 2 Stalkers and 3 Zealots on each team\\
+ \hline
+ \centering 3s5z   & 3 Stalkers and 5 Zealots on each team\\
  \hline
  
 \end{tabular}
 \vspace{3mm}
 
-The experimental setup is the same as that of \cite{smac}: ``Throughout the training, we anneal linearly from 1.0 to 0.05 over 50,000 time steps and keep it constant for the rest of the learning. We set $\gamma= 0.99$ for all experiments. The replay buffer contains the most recent 5000 episodes.  We sample batches of 32 [dependent on grid size] episodes uniformly from the replay buffer, and train on fully unrolled episodes, performing a single gradient descent step after every episode.'' 
+The experimental setup is the same as that of \cite{smac}: ``Exploration is performed during training using independent $\epsilon$-greedy action selection, where each agent $a$ performs $\epsilon$-greedy action selection over its own $Q_a$. Throughout the training, we anneal linearly from 1.0 to 0.05 over 50,000 time steps and keep it constant for the rest of the learning. We set $\gamma= 0.99$ for all experiments. The replay buffer contains the most recent 5000 episodes.  We sample batches of 32 [dependent on grid size] episodes uniformly from the replay buffer, and train on fully unrolled episodes, performing a single gradient descent step after every episode.'' 
 
-The training is paused after every 20,000 timesteps during which 32 test episodes are run with agents performing action selection greedily in a decentralised fashion. The percentage of episodes where the agents defeat all enemy units within the permitted time limit is referred to as the \textit{test win rate}.
+The training is paused every 20,000 timesteps, during which 32 test episodes are run with agents performing action selection greedily in a decentralised fashion. The percentage of episodes where the agents defeat all enemy units within the permitted time limit is referred to as the \textit{test win rate}.
 
 Each agent network is trained using 5 distinct random seeds (which are used for all random operations) to validate the replicability of the results. Furthermore, we calculate the mean and standard deviation of the performance of these 5 runs.
 
 \subsection{Baseline Experiments}
 
-The first set of experiments will be used to evaluate the performance of each candidate architecture on various StarCraft II maps. Both the QMIX and VDN mixing networks will be used to allow us to compare each of the candidate architecture's performance, using each mixing network. The grid size is set to 12x12, as this showed good potential in early tests, while minimising memory usage.
+The first set of experiments will be used to evaluate the performance of each candidate architecture on various StarCraft II maps. Both the QMIX and VDN mixing networks will be used to allow us to compare the performance of each candidate architecture using each mixing network. The grid size is set to $12\times12$, as this showed good potential in early tests, while minimising memory usage.
 
 
 \subsubsection{Baseline Experiments on 3m}
 
-Firstly we shall test the performance of the candidate architectures in the 3m map. We can see the performance of each architecture in figure \ref{fig:3m_all}. 
+Firstly we shall test the performance of the candidate architectures on the 3m map. We can see the performance of each architecture in figure \ref{fig:3m_all}. 
 
-Using the VDN mixing network, all architectures exhibit excellent performance, all reaching a near perfect win rate within just 500,000 timesteps with low variance, matching the performance of the standard \textit{rnn} architecture.
+Using the VDN mixing network, all architectures exhibit excellent performance, reaching a near perfect win rate within just 500,000 timesteps with low variance, matching the performance of the standard \textbf{RNN} architecture.
 
-Using the QMIX mixing network, every architecture performed well on the 3m map, again matching the performance of the standard rnn architecture. 
+Using the QMIX mixing network, every architecture also performed very well on the 3m map, again matching the performance of the standard \textbf{RNN} architecture. 
 
-The fact that the more complex grid-based architectures did not have greater performance than the standard rnn architecture in this map is interesting, but likely explained by the simplicity of the 3m map: a convolutional encoder and grid representation is simply not needed for a map with this few (and identical) units.
+The fact that the more complex grid-based architectures did not have greater performance than the standard \textbf{RNN} architecture in this map is interesting, but likely explained by the simplicity of the 3m map: a convolutional encoder and grid representation is simply not needed for a map with this few (identical) units.
 
 \begin{figure}[h]
     \centering
     \hbox{\hspace{-6.35em}\includegraphics[width=1.34\textwidth]{images/graphs/all3m.png}}
-    \caption{Mean test win rate of different architectures on the 3m map with bothe the VDN and QMIX mixing networks. The shaded region shows one standard deviation above and below the mean. We can see that each architecture performs similarly, exhibiting very high performance using both VDN and QMIX .}
+    \caption{Mean test win rates of different architectures on the 3m map with both the VDN and QMIX mixing networks. The shaded region shows one standard deviation above and below the mean. We can see that each architecture performs similarly, exhibiting very high performance using both VDN and QMIX .}
     \label{fig:3m_all}
 \end{figure}
 
 \subsubsection{Baseline Experiments on 2s3z}
-We now perform the same baseline experiments on the 2s3z map. The results of this experiment (for both the VDN and QMIX mixing networks) can be seen in figure \ref{fig:2s3z_all}.
+We now perform the same experiments on the 2s3z map. The results of these experiments (for both the VDN and QMIX mixing networks) can be seen in figure \ref{fig:2s3z_all}.
 
-Using the VDN mixing network, we can see both the conv and conv\_input\_flat architectures exhibit lesser performance when compared to the standard rnn architecture, while the conv\_input\_grid architecture matches its performance. This suggests that grid-based actions as inputs are more useful to an agent than grid based observations, and provide a superior insight into its environment.
+Using the VDN mixing network, we can see both the \textbf{conv} and \textbf{conv\_input\_flat} architectures exhibit lesser performance when compared to the standard \textbf{RNN} architecture, while the \textbf{conv\_input\_grid} architecture matches its performance. This suggests that grid-based actions as inputs are more useful to an agent than grid based observations, and provide a superior insight into its environment.
 
 
-Using the QMIX mixing network, performance was higher on all architectures: each exhibited a large limit win rate and fast convergence. However, we clearly see that both the conv and conv\_input\_flat architectures under-performed compared to the standard rnn network. This suggests that, in a more complex map with multiple types of units (such as 2s3z), if an architecture is using a convolutional encoder for grid based observations then it needs grid based actions as inputs to be effective. 
+Using the QMIX mixing network, performance was higher on all architectures (when compared to the VDN mixing network): each exhibited a large limit win rate and fast convergence. However, we clearly see that both the \textbf{conv} and \textbf{conv\_input\_flat} architectures under-performed compared to the standard \textbf{RNN} network. This suggests that, in a more complex map with multiple types of units (such as 2s3z), if an architecture is using a convolutional encoder for grid based observations then it needs grid based actions as inputs to be effective. 
 
 There was increased variance in the performance on the 2s3z map when compared to the 3m map. This is likely due to the grid representation of observations, and the different numbers of units: the relationships between the agents (and enemies) is harder to capture on this map.
 
 \begin{figure}[h]
     \centering
     \hbox{\hspace{-6.35em}\includegraphics[width=1.34\textwidth]{images/graphs/all2s3z.png}}
-    \caption{Mean test win rate of different architectures on the 2s3z map using both the VDN and QMIX mixing networks. The shaded region shows one standard deviation above and below the mean. The conv\_input\_grid and rnn architectures perform similarly and are clearly superior to the other architectures.}
+    \caption{Mean test win rates of different architectures on the 2s3z map using both the VDN and QMIX mixing networks. The shaded region shows one standard deviation above and below the mean. The \textbf{conv\_input\_grid} and \textbf{RNN} architectures perform similarly and are clearly superior to the other architectures.}
     \label{fig:2s3z_all}
 \end{figure}
 
@@ -73,36 +75,36 @@ There was increased variance in the performance on the 2s3z map when compared to
 
 
 \subsection{Experiments On Different Grid Sizes}
-In this section we experiment with different grid sizes for the inputs of conv\_input\_grid (both the observations and actions as inputs). A trade-off is made between the simplicity of a small grid (which has a smaller network that can train more quickly) and the level of detail that can be achieved with a larger grid, allowing for greater spatial relationships to be made between the units.
+In this section we experiment with different grid sizes for the inputs of \textbf{conv\_input\_grid} (both the observations and actions as inputs). A trade-off is made between the simplicity of a small grid (which has a smaller network that can train more quickly) and the level of detail that can be achieved with a larger grid, allowing for greater spatial relationships to be made between the units.
 
 The experiments will be performed using the same set up as before, and will take place on the 2s3z map, as this includes units of different types.
 
 
 
-The grid sizes tested are 6x6, 12x12, 18x18 and 24x24. This is because the convolutional encoder kernels (of size 3x3) are simply too large for an input of size smaller than 6x6, and recent tests show that grids larger than 24x24 run out of memory, even with small batch sizes. As described in section 3.4.2, some simple tests were run to find the optimal batch sizes for the different sizes of grid observations. Every other configuration parameter was kept the same for each experiment.
+The grid sizes tested are $6\times6$, $12\times12$, $18\times18$ and $24\times24$. This is because the convolutional encoder kernels (of size $3\times3$) are simply too large for an input of size smaller than $6\times6$, and recent tests show that grids larger than $24\times24$ run out of memory, even with small batch sizes. As described in section 3.3.2, some simple tests were run to find the optimal batch sizes for the different sizes of grid observations. Every other configuration parameter was kept the same for each experiment.
 
 
 
 
 
-The conv\_input\_grid architecture was experimented upon for each of these grid sizes, with the results shown in figure \ref{fig:gridsizes}.
+The \textbf{conv\_input\_grid} architecture was the architecture chosen to experiment upon for each of these grid sizes, as this architecture showed very promising performance in the baseline experiment, and uses grid-representation for both observations and actions. The results are shown in figure \ref{fig:gridsizes}.
 
 
 \begin{figure}
     \centering
     \hbox{\hspace{5em}\includegraphics[scale=0.5]{images/graphs/grids.png}}
-    \caption{Mean test win rate of the conv\_input\_grid architecture with various grid sizes. The shaded region shows one standard deviation above and below the mean. All tested grid sizes perform well, apart from the 6x6 size, which clearly exhibits inferior performance.}
+    \caption{Mean test win rate of the conv\_input\_grid architecture with various grid sizes. The shaded region shows one standard deviation above and below the mean. All tested grid sizes perform well, apart from the $6\times6$ size, which clearly exhibits inferior performance.}
     \label{fig:gridsizes}
 \end{figure}
 
-The 12x12, 18x18 and 24x24 grid sizes performed very similarly, each having good performance. Each size has a very large initial rate of learning (between 0 and 200,000 timesteps), reaching around a $50\%$ test win rate very quickly. From here on, every grid size exhibits a steady increase to its convergence of around $92\%$ test win rate after around 3,000,000 timesteps. The similarity of these results suggest that a grid size of $12 \times 12$ or above is enough to represent the environment effectively.
+The $12\times12$, $18\times18$ and $24\times24$ grid sizes performed very similarly, each having good performance. Each size has a very large initial rate of learning (between 0 and 200,000 timesteps), reaching around a $50\%$ test win rate very quickly. From here on, each of these grid sizes exhibit a steady increase to its convergence of around a $92\%$ test win rate after 3 million timesteps. The similarity of these results suggest that a grid size of $12 \times 12$ or above is enough to represent the environment effectively.
 
 
 
 
-Clearly, the $6 \times 6$ grid performs very poorly: although some learning can be seen to have taken place, little progress and large variance is still apparent after in comparison to the other sizes. This is likely a result of the grid not being able to represent the complexities of the map well enough: the relations between agents has been abstracted too far away, since 36 cells is not enough to represent this. 
+Clearly, the $6 \times 6$ grid performs very poorly: although some learning can be seen to have taken place, little progress and large variance is still apparent in comparison to the other sizes. This is likely a result of the grid not being able to represent the complexities of the map well enough: the relations between agents has been abstracted too far away, since 36 cells is not enough to represent this. 
 
-Another suggestion for this lack of performance is the effect of multiple occupancy. On a smaller grid, it is more likely that the multiple occupancy algorithm will be employed, which may have a negative effect on performance, as the observation the agent receives is different from the true observation. In order to see this, we will run a simple test to measure the number of time multiple occupancy occurs over a period of training. Shown in the table below are the average number of cells with multiple occupancy per observation, rounded to two significant figures:
+Another suggestion for this lack of performance is the effect of multiple occupancy. On a smaller grid, it is more likely that multiple occupancy will occur, which may have a negative effect on performance, as the observation the agent receives is different from the true observation. In order to see this, we will run a simple test to measure the number of time multiple occupancy occurs over a period of training. Shown in the table below are the average number of cells with multiple occupancy per observation, rounded to two significant figures:
 
 
 \vspace{3mm}
@@ -111,13 +113,13 @@ Another suggestion for this lack of performance is the effect of multiple occupa
  \hline
  \centering Grid Size& \centering Mean Number of Cells With Multiple Occupancy\tabularnewline
  \hline
- \centering 6x6   & \centering 0.65\tabularnewline
+ \centering $6\times6$   & \centering 0.65\tabularnewline
  \hline
- \centering 12x12  & \centering 0.25\tabularnewline
+ \centering $12\times12$  & \centering 0.25\tabularnewline
  \hline
- \centering 18x18  & \centering 0.18\tabularnewline
+ \centering $18\times18$  & \centering 0.18\tabularnewline
  \hline
- \centering 24x24   & \centering 0.0026\tabularnewline
+ \centering $24\times24$   & \centering 0.0026\tabularnewline
  \hline
  
 \end{tabular}
@@ -127,37 +129,37 @@ Another suggestion for this lack of performance is the effect of multiple occupa
 
 This makes sense, as the probability of two units occupying the same cell in the grid should decrease in an inverse square fashion, which is similar to what we see here. 
 
-Figure \ref{fig:multocc} shows a comparison of performance between the conv\_input\_grid architecture with and without the resolve multiple occupancy (RSO) algorithm, on both the 6x6 and 12x12 grid sizes. This experiment was performed on the 2s3z map.
+Figure \ref{fig:multocc} shows a comparison of performance between the \textbf{conv\_input\_grid} architecture with and without the resolve multiple occupancy (RSO) algorithm, on both the $6\times6$ and $12\times12$ grid sizes. This experiment was performed on the 2s3z map.
 
 \begin{figure}
     \centering
     \hbox{\hspace{5em}\includegraphics[scale=0.5]{images/graphs/mult_occ.png}}
-    \caption{Mean test win rate of the conv\_input\_grid architecture (with various grid sizes) with and without the resolve multiple occupancy (RSO) algorithm. The shaded region shows one standard deviation above and below the mean. RSO is shown to have a greater effect on smaller grid sizes, and is not necessarily required for high performance on the 12x12 grid size.}
+    \caption{Mean test win rate of the \textbf{conv\_input\_grid} architecture (with various grid sizes) with and without the resolve multiple occupancy (RSO) algorithm. The shaded region shows one standard deviation above and below the mean. RSO is shown to have a greater effect on smaller grid sizes, and is not necessarily required for high performance on the $12\times12$ grid size.}
     \label{fig:multocc}
 \end{figure}
 
-As we can see, especially on the 6x6 map, there is some drop in performance when RSO is not used. However, a similar limit performance was reached in both cases. This suggests the algorithm is useful for the network to train, but not essential for good performance. 
+As we can see, especially on the $6\times6$ map, there is some drop in performance when RSO is not used. However, a similar limit performance was reached in both cases. This suggests the algorithm is useful for the network to train, but not essential for good performance. 
 
 
 \subsection{A Task Invariant Architecture}
-In this section we test our partial observability hypothesis that a successful task invariant architecture exists (enabled by the partial observability of StarCraft), particularly with the use of a CNN for the extraction of spatial information.
+In this section we test our partial observability hypothesis (Hypothesis \ref{hyp:first}) that a successful task invariant architecture exists (enabled by the partial observability of StarCraft), particularly with the use of a CNN for the extraction of spatial information.
 
-The conv\_input\_grid architecture is task invariant, except for the input of agent IDs. This is input in order to allow the different agents to share network weights, with the ID being used by the network to distinguish between the agents. However, the RNN and new observation (and action) representation already encode this differentiation between agents: the observation is centralised around the agent, and the GRU-cell's `memory' is able to `remember' past observations, making the agents easy to tell apart. This suggests that the agent ID is a redundant input. We can therefore create a task invariant architecture, conv\_input\_grid\_no\_id, by removing this input.
+The \textbf{conv\_input\_grid} architecture is task invariant, except for the input of agent IDs. This is input in order to allow the different agents to share network weights, with the ID being used by the network to distinguish between the agents. However, the RNN and new observation (and action) representation already encode this differentiation between agents: the observation is centralised around the agent, and the GRU-cell's ``memory'' is able to ``remember'' past observations, making the agents easy to tell apart. This suggests that the agent ID is a redundant input. We can therefore create a task invariant architecture, \textbf{conv\_input\_grid\_no\_id}, by removing this input.
 
 
-To test the redundancy of the agent ID, using the same experiment set up as before, on both the 3m and 2s3z maps. This allows us to see the effect of removing the agent ID input on both a simple map with one unit type, and a larger map with multiple unit types.
+To test the redundancy of the agent ID, using the same experiment set up as before, we experiment on both the 3m and 2s3z maps. This allows us to see the effect of removing the agent ID input on both a simple map with one unit type, and a larger map with multiple unit types.
 
-Figure \ref{fig:noid} shows the results of this experiment compared to the previous results for the conv\_input\_grid architecture.
+Figure \ref{fig:noid} shows the results of this experiment compared to the previous results for the \textbf{conv\_input\_grid} architecture.
 
 \begin{figure}
     \centering
     \hbox{\hspace{-6.6em}\includegraphics[scale=0.47]{images/graphs/noid.png}}
-    \caption{Mean test win rate of the conv\_input\_grid and conv\_input\_grid\_no\_id architectures. The shaded region shows one standard deviation above and below the mean. There does not appear to be any decrease in performance without the ID observation, on either the 3m or 2s3z map.}
+    \caption{Mean test win rates of the \textbf{conv\_input\_grid} and \textbf{conv\_input\_grid\_no\_id} architectures. The shaded region shows one standard deviation above and below the mean. There does not appear to be any significant decrease in performance without the ID observation, on either the 3m or 2s3z map.}
     \label{fig:noid}
 \end{figure}
 
 
-Clearly, the architecture suffered very little decrease in performance on both maps. Even though agents share network weights, these results suggest that the network can differentiate between the agents somehow, thus rendering the agent ID unnecessary. 
+Clearly, the architecture suffered very little decrease in performance on both maps. Even though agents share network weights, these results suggest that the network can differentiate between the agents somehow (or that this differentiation is not necessary for good performance), thus rendering the agent ID unnecessary. 
 
 
 \subsubsection{Agent Differentiation}
@@ -167,17 +169,17 @@ The network may be able to perform this differentiation through the use of its G
 We can therefore make the following hypothesis:
 
 \begin{hyp}[Agent Differentiation] \label{hyp:second}
-In a non-recurrent network, two action-observation histories arising from two different agents may not be able to be locally disambiguated from the network's input, leading to reduced performance
+In a non-recurrent network, two action-observation histories arising from two different agents may not be able to be locally disambiguated from the network's input, leading to reduced performance.
 \end{hyp}
 
 
-Hypothesis 2 is easily tested by removing the GRU-cell from the conv\_input\_grid\_no\_id architecture and performing the same experiment to measure performance. The result of this experiment is shown in figure \ref{fig:rnnvsnonrnn}.
+Hypothesis 2 is easily tested by removing the GRU-cell from the \textbf{conv\_input\_grid\_no\_id} architecture and performing the same experiment to measure performance; the network cannot disambiguate two different action-observation histories from two different agents without a recurrent unit, as the agents share network weights. The result of this experiment is shown in figure \ref{fig:RNNvsnonRNN}.
 
 \begin{figure}
     \centering
-    \hbox{\hspace{5em}\includegraphics[scale=0.5]{images/graphs/rnn.png}}
-    \caption{Mean test win rate of the conv\_input\_grid\_no\_id with and without a GRU-cell before the final linear layer. The shaded region shows one standard deviation above and below the mean. There appears to be some drop in performance without the GRU-cell.}
-    \label{fig:rnnvsnonrnn}
+    \hbox{\hspace{5em}\includegraphics[scale=0.5]{images/graphs/RNN.png}}
+    \caption{Mean test win rates of the \textbf{conv\_input\_grid\_no\_id} with and without a GRU-cell before the final linear layer. The shaded region shows one standard deviation above and below the mean. There appears to be some drop in performance without the GRU-cell.}
+    \label{fig:RNNvsnonRNN}
 \end{figure}
 
 
@@ -187,15 +189,15 @@ This result suggests that Hypothesis 2 is invalid, since the lack of agent disam
 
 \subsubsection{Network Inputs}
 
-It is important for us to understand which observations are required for good performance. To do this, we run experiments in the same way as before on the conv\_input\_grid\_no\_id architecture. However, we vary the amount of information included in the observation, from very rich to empty (note that we always pass available actions as input, so even with an empty observation the network does receive an input). This allows us to clearly see the effect of each observation on performance, as well as to see the base level of performance provided by the input actions.
+It is important for us to understand which observations are required for good performance. To do this, we run experiments in the same way as before on the \textbf{conv\_input\_grid\_no\_id} architecture. However, we vary the amount of information included in the observation, from very rich to empty (note that we always pass a particular available action as an input, so even with an empty observation the network does receive an input). This allows us to clearly see the effect of each observation on performance, as well as to see the base level of performance provided by the input actions.
 
-The level of observations we will use are shown below. The rows headers are the names of the observation levels, and the columns headers are observation features. Note that an available action is always included as an input to the network (although strictly is not an observation, but is included here for clarity).
+The level of observations we will use are shown below. The rows headers are the names of the observation levels (which are referred to in figure 16), and the columns headers are observation features (a checkbox indicates that a particular feature is included in an observation level. Note that an available action is always included as an input to the network (although strictly is not an observation, but is included here for clarity).
 
-\vspace{3mm}
+\begin{adjustwidth}{-.5in}{-.5in}  
 \begin{center}
 \begin{tabular}{|l|l|l|l|l|l|} 
 \hline
-              & Agent ID & Unit Type & Health & Only Ally or Enemy Unit? & Available Action  \\ 
+              & Agent ID & Unit Type & Health & Ally or Enemy Unit? & Available Action  \\ 
 \hline
 Full      &  \centering\checkmark    &    \checkmark   &          \checkmark          &    \checkmark                &       \checkmark \\ 
 \hline
@@ -209,19 +211,19 @@ Empty &       &      &                   &                  &  \checkmark\\
 \hline
 \end{tabular}
 \end{center}
-\vspace{3mm}
+\end{adjustwidth}
 
-
+\vspace{5mm}
 The relative performance of the architecture with these level of observations can be seen in figure \ref{fig:obs}. 
 
 \begin{figure}
     \centering
     \hbox{\hspace{5em}\includegraphics[scale=0.5]{images/graphs/obs.png}}
-    \caption{Mean test win rate of the conv\_input\_grid with various levels of observation detail. The shaded region shows one standard deviation above and below the mean. The only required observation feature appears to be ally\_or\_enemy (which distinguishes between ally and enemy units) \cs{I don't understand how the labels in this figure fit together with the different rows of ticks in the table, maybe you can let the row headers correspond with the figure labels?}.}
+    \caption{Mean test win rate of the \textbf{conv\_input\_grid\_no\_id} with various levels of observation detail. The shaded region shows one standard deviation above and below the mean. The only required observation feature appears to be \textbf{ally\_or\_enemy} (which distinguishes between ally and enemy units).}
     \label{fig:obs}
 \end{figure}
 
-As expected, an empty observation gives very poor performance; the network cannot seem to learn at all. Surprisingly, however, every other level of observation showed near identical performance, reaching at least a $95\%$ win rate after just 2 million timesteps. This suggests that the only observation that is necessary for high performance in this architecture is ally\_or\_enemy: an effective strategy of every agent shooting the same target can be performed using only this observation.
+As expected, an empty observation gives very poor performance; the network cannot seem to learn at all. Surprisingly, however, every other level of observation showed near identical performance, reaching at least a $95\%$ win rate after just 2 million timesteps. This suggests that the only observation that is necessary for high performance in this architecture is \textbf{ally\_or\_enemy} (which distinguishes between ally and enemy units): an effective strategy of every agent shooting the same target can be performed using only this observation.
 
 
 
@@ -234,7 +236,7 @@ As expected, an empty observation gives very poor performance; the network canno
 
 \subsection{Transfer and Multi-Task Learning}
 
-Finally, with our task invariant architecture (conv\_input\_grid\_no\_id) we are able to test our partial observability hypothesis by evaluating the performance of a trained model on a different map.
+Finally, with our task invariant architecture (\textbf{conv\_input\_grid\_no\_id}) we are able to start testing our partial observability hypothesis (Hypothesis 1) by evaluating the performance of the architecture in various transfer learning and multi-task learning situations.
 
 To start, we will experiment upon transfer learning between the simple (single unit type) maps, 3m, 5m and 8m. We simply take a previously trained model for the relevant map, and begin training this network on another map. We will then compare the performance of this network (which has previously been trained on another map) with a network that was only trained on this map. Initially, we will only experiment with transfer learning between 3m and 5m, and 5m and 8m, to ensure the maps are as similar as possible, in line with our partial observability hypothesis.
 
@@ -249,33 +251,33 @@ We see in figure \ref{fig:transfer6} that this is not the case. In fact, we see 
 \begin{figure}[h]
     \centering
     \hbox{\hspace{-5em}\includegraphics[width=1.2\textwidth]{images/graphs/6.png}}
-    \caption{Mean test win rate of the conv\_input\_grid\_no\_id architecture on various scenarios using warm-start training (using a network that has trained already trained for 600,000 timesteps on another scenario). The shaded region shows one standard deviation above and below the mean. This format of transfer learning does not appear to be useful for training and, in some cases, it appears to have a negative effect on training. }
+    \caption{Mean test win rate of the \textbf{conv\_input\_grid\_no\_id} architecture on various scenarios using warm-start training (using a network that has trained already trained for 600,000 timesteps on another scenario). The shaded region shows one standard deviation above and below the mean. This format of transfer learning does not appear to be useful for training and, in some cases, it appears to have a negative effect. }
     \label{fig:transfer6}
 \end{figure}
 
 
-The reason for this may be that the network has over-fitted the original map, and is no longer `plastic' enough to learn on another map. The time where no progress is made in the 3m to 5m transfer example can thus be characterised as a period of `undoing' the previous work, in order to be able to learn on this new map.
+The reason for this may be that the network has over-fitted the original map, and is no longer ``plastic'' enough to learn on another map (the term ``plastic'' here refers to a network's ability to respond to training). The time where no progress is made in the 3m to 5m transfer example can thus be characterised as a period of ``undoing'' the previous work, in order to be able to learn on this new map.
 
-To test this, we shall try again with networks that have not yet reached limit performance, but have shown some good progress, which is around 200,000 timesteps. At this point, the network is still very `plastic', and able to adapt to other maps, but still has learned a good insight into the game. This experiment is shown in figure \ref{fig:transfer2}.
+To test this, we shall try again with networks that have not yet reached limit performance, but have shown some good progress, which is around 200,000 timesteps. At this point, the network is still very ``plastic'', and able to adapt to other maps, but still has learned a good insight into the game. This experiment is shown in figure \ref{fig:transfer2}.
 
 
 \begin{figure}[h]
     \centering
     \hbox{\hspace{-5em}\includegraphics[width=1.2\textwidth]{images/graphs/2.png}}
-    \caption{Mean test win rate of the conv\_input\_grid\_no\_id architecture on various scenarios using warm-start training (using a network that has trained already trained for 200,000 timesteps on another scenario). The transfer does not appear to aid with training, and in some cases can be seen to negatively impact it.}
+    \caption{Mean test win rate of the \textbf{conv\_input\_grid\_no\_id} architecture on various scenarios using warm-start training (using a network that has trained already trained for 200,000 timesteps on another scenario). The transfer does not appear to aid with training, and in some cases can be seen to negatively impact it.}
     \label{fig:transfer2}
 \end{figure}
 
-We see a similar result: the warm-start of training does not provide any benefit. We do see an improvement in the 3m to 5m transfer case, as the network immediately starts to make progress, but it is still far below the performance of a fresh network.
+We see a similar result: the warm-start of training does not provide any benefit. We do see an improvement in the 3m to 5m transfer case, as the network immediately starts to make progress, but it is still nowhere close to the high initial performance that we expected.
 
-However, another observation that can be made is that transfers from larger maps to smaller maps are more successful than vice-versa. This is likely due to the fact that the agents in a larger map is trained on scenarios it will likely experience in a smaller map, but the converse is not necessarily true.
+However, another observation that can be made is that transfers from larger maps to smaller maps are more successful than vice-versa. This is likely due to the fact that the agents in a larger map are trained on scenarios it will likely experience in a smaller map, but the converse is not necessarily true.
 
 
-A likely explanation for these results is that the input space is simply too different for a different map. Although the environment is partially observable, agents in different maps will observe a different number or enemies and allies a large amount of the time, especially if the observation radius includes all other enemies (which is very likely during the later, more important stages of the battle). 
+A likely explanation for these results is that the input space is simply too different for a different map. Although the environment is partially observable, agents in different maps will observe a different number or enemies and allies a large amount of the time, especially if the observation radius includes all other enemies (which is very likely during the later stages of the battle when the units are closer together). 
 
-Hence, we devise a strategy for a network to learn on multiple maps simultaneously, to enrich the input space and allow for a more generalisable network. We maintain a network during training, and for each episode, we choose a map uniformly at random from a set of available maps, and train as normal. We will start with learning on just two maps, 3m and 5m.
+Hence, we devise a strategy for a network to learn on multiple maps simultaneously, to enrich the input space and allow for a more generalisable network. We maintain a network during training, and for each episode, we choose a map uniformly at random from a set of available maps, and train on that episode as normal. We will start with learning on just two maps, 3m and 5m.
 
-The results of this simultaneous learning can be seen in the top left graph in figure \ref{fig:reptileall}. 
+The results of this multi-task learning experiment can be seen in the top left graph in figure \ref{fig:reptileall}. 
 
 
 
@@ -283,19 +285,19 @@ The results of this simultaneous learning can be seen in the top left graph in f
 \begin{figure}[h]
     \centering
     \hbox{\hspace{-5em}\includegraphics[width=1.2\textwidth]{images/graphs/all.png}}
-    \caption{Mean test win rate of the conv\_input\_grid\_no\_id architecture simultaneously learning various sets of maps simultaneously. The shaded region shows one standard deviation above and below the mean. The network can be seen to reach high performance on multiple maps simultaneously.}
+    \caption{Mean test win rate of the \textbf{conv\_input\_grid\_no\_id} architecture training various sets of maps simultaneously. The shaded region shows one standard deviation above and below the mean. The network can be seen to reach high performance on multiple maps simultaneously.}
     \label{fig:reptileall}
 \end{figure}
 
 
-We are able to take the resulting network and play with excellent performance on both the 3m and 5m maps individually. 
+Excellent performance is exhibited on all three maps, showing similar performance to when the architecture was trained on 3m and 5m individually.  
 
 A natural extension to this experiment is to try to learn on more than 2 maps, or maps with more than one unit type. We therefore run two more experiments: one experiment on 3m, 5m and 8m, and one experiment on 2s3z and 3s5z. The results of these experiments are also shown in figure \ref{fig:reptileall}.
 
 
 
-When trained on 3m, 5m and 8m, we can see only a small drop in performance and increase in variance when compared to the performance of training on the individual maps. A similar observation can be made when trained on 2s3z and 3s5z. The performance limit and final variance is equal to those individual maps, showing that, with enough training time, the network can achieve the highest performance possible on multiple maps.
+When trained on 3m, 5m and 8m, we can see only a small drop in performance and increase in variance when compared to the performance of training on the individual maps. A similar observation can be made when trained on 2s3z and 3s5z. The performance limit and final variance is equal to those individual maps, showing that, with enough training time, the network can achieve close to the highest performance possible on multiple maps.
 
 When trained on both 3m and 2s3z, we do see a significant decrease in performance (increased convergence time and variance) when compared to the performance of training on the individual maps. This is likely because each map has an entirely different set of unit types, and therefore the maps are not very similar. However, the limit of performance is still high, suggesting the network can effectively learn both maps simultaneously.
 
-Overall, under this new system of training on multiple maps simultaneously, we have shown that our task invariant architecture is able to learn across various tasks with some level of success, albeit with reduced performance in some cases. These results largely support our partial observability hypothesis, but the decrease in performance suggests there are some differences between the tasks that cause difficulty for a single network.
+Overall, under this new system of training on multiple maps simultaneously, we have shown that our task invariant architecture is able to learn across various tasks with some level of success, albeit with reduced performance in some cases. These results largely support our partial observability hypothesis (Hypothesis 1), but the decrease in performance suggests there are some differences between the tasks that cause difficulty for a single network.

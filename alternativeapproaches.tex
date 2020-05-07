@@ -4,7 +4,7 @@ Machine learning is a vast field of Computer Science with many approaches demons
 
 Transformer networks are able to process unordered sets of observations, which RNNs are unable to process effectively. Because of this, transformer networks are used extensively in natural language processing (NLP). This feature also allows for greater parallelisation than RNNs.
 
-A transformer network consists of a set of chained encoders and a set of chained decoders. Both the encoders and decoders make use of an attention mechanism: a mechanism to use a set of encodings to incorporate context into a sequence \cite{illustratedtransformer}. An attention function can be described as mapping a query and a set of key-value pairs to an output, where the query, keys, values, and output are all vectors. \cite{attention}. The output is computed as a weighted sum of the values, where the weight assigned to each value is computed by a compatibility function of the query with the corresponding key \cite{attention}.
+A transformer network consists of a set of chained encoders and a set of chained decoders. Both the encoders and decoders make use of an attention mechanism: a mechanism to use a set of encodings to incorporate context into a sequence \cite{illustratedtransformer}. An attention function can be described as mapping a query and a set of key-value pairs to an output, where the query, keys, values, and output are all vectors \cite{attention}. The output is computed as a weighted sum of the values, where the weight assigned to each value is computed by a compatibility function of the query with the corresponding key \cite{attention}.
 
 Scaled dot-product attention is a specific attenuation function with the following definition, as described in \cite{attention}:
 
@@ -29,7 +29,7 @@ A network architecture is described in \cite{graph} for environments represented
 
 DGN shares weights among all agents, making it easy to scale, and has shown great success in various game examples \cite{graph}. Therefore, applying this technique to the StarCraft II environment has a lot of potential, especially considering the successes of CNNs in this project. 
 
-A drawback of this approach is that it is not invariant to the number of agents, since the size of the graph is defined in terms of this. A possible way to adapt this is, perhaps, to make each node a specific location in the environment, and assign weights to the edges with respect to agent locations. For example, edge $e_i = (u,v)$ has finite weight if, and only if, there are two agents close to the locations represented by nodes $u$ and $v$ respectively.
+A drawback of this approach is that it is not invariant to the number of units in the map, since the size of the graph is defined in terms of this. A possible way to adapt this is, perhaps, to make each node a specific location in the environment, and assign weights to the edges with respect to agent locations. For example, edge $e_i = (u,v)$ has finite weight if, and only if, there are two agents close to the locations represented by nodes $u$ and $v$ respectively.
 
 
 
