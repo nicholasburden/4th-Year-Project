@@ -25,7 +25,7 @@ Therefore, this network architecture is a very promising approach in the StarCra
 
 An alternative approach is to model the environment as a graph, as described in \cite{graph}. This builds on some of the ideas explored in this report, but formalises the relationships between agents (and other units) using a graph. Each agent is represented by a node in the graph, and each node $i$ has a set of neighbours, $\mathbb{B}_i$, which is determined by distance or other metrics \cite{graph}.
 
-A network architecture is described in \cite{graph} for environments represented in this way, called graph  convolutional reinforcement learning, namely DGN. DGN consists of three types of modules:  observation encoder, convolutional layer and Q-network. 
+A network architecture is described in \cite{graph} for environments represented in this way, called graph convolutional RL, namely DGN. DGN consists of three types of modules:  observation encoder, convolutional layer and Q-network. 
 
 DGN shares weights among all agents, making it easy to scale, and has shown great success in various game examples \cite{graph}. Therefore, applying this technique to the StarCraft II environment has a lot of potential, especially considering the successes of CNNs in this project. 
 

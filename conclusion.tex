@@ -1,6 +1,6 @@
 \subsection{Summary of Results}
 
-The main result from this report concerns training and testing on multiple scenarios using our task-invariant architecture. We found that transferring to an unseen scenario exhibited very poor performance (although performance was less poor when transferring to a smaller map or when using a network that has not reached its limit of performance). This is likely because of the ``out-of-distribution'' \cite{ood} problem: faced with a sample outside the training distribution, as neural network will generalise arbitrarily badly. This is particularly relevant to RNNs, where one observation difference in the entire history can lead to completely different hidden states. This also supports why we saw a slight improvement when transferring from larger to smaller maps: if the network has seen similar states, the transfer is more successful.
+The main result from this report concerns training and testing on multiple scenarios using our task-invariant architecture. We found that transferring to an unseen scenario exhibited very poor performance (although performance was less poor when transferring to a smaller map or when using a network that has not reached its limit of performance). This is likely because of the ``out-of-distribution'' \cite{ood} problem: faced with a sample outside the training distribution, a neural network will generalise arbitrarily badly. This is particularly relevant to RNNs, where one observation difference in the entire history can lead to completely different hidden states. This also supports why we saw a slight improvement when transferring from larger to smaller maps: if the network has seen similar states, the transfer is more successful.
 
 
 
@@ -8,7 +8,7 @@ However, we found that multi-task learning was more successful, suggesting that 
 
 Furthermore, we found that disambiguation of agents' action-observation histories is not a bottleneck for performance (in these tasks). Even with no mechanism for this disambiguation (i.e. without an agent ID as an input, and without a recurrent unit), fairly high performance was still achieved.
 
-Finally, we found that the memory requirements for architectures utilising grid-based observations and actions to be extremely large (around 5GB per network, compared to under 1GB for non-grid-based architectures on small maps). This is a major downfall of the approach, as it limits the size the map that can be trained upon, and increases the training time. This may require the use of a smaller replay buffer or grid resolution, which may decrease performance.
+Finally, we found that the memory requirements for architectures utilising grid-based observations and actions were extremely large (around 5GB per network, compared to under 1GB for non-grid-based architectures on small maps). This is a major downfall of the approach, as it limits the size the map that can be trained upon, and increases the training time. This may require the use of a smaller replay buffer or grid resolution, which may decrease performance.
 
 
 
@@ -21,7 +21,7 @@ Due to the size and scope of this project there are a number of directions in wh
 
 \subsubsection{Task Invariance Using QMIX}
 
-The QMIX mixing network is inherently dependent on the task: the number of inputs in the network depends on the number of agents. The VDN mixing network does not have this problem as it simply sums the $Q$-values of each agent. Future work could involve adapting the QMIX mixing network for task invariance. This would involve a transformer-style architecture to process a new representation of the state that is independent of the number of units in the map.
+The QMIX mixing network is inherently dependent on the task: the number of inputs in the network depends on the number of agents. The VDN mixing network does not have this problem as it simply sums the Q-values of each agent. Future work could involve adapting the QMIX mixing network for task invariance. This would involve a transformer-style architecture to process a new representation of the state that is independent of the number of units in the map.
 
 
 \subsubsection{Observing Terrain}

@@ -6,7 +6,7 @@ Markov Decision Processes (MDPs) are a mathematical framework for decision makin
 
 \begin{definition}
 
-A Markov Decision Process (MDP) is represented as a 4-tuple $(S, A_{s}, P, R)$, where
+A Markov Decision Process (MDP) is represented as a 4-tuple $(S, A, P, R)$, where
 \begin{itemize}
   \item $S$ is a finite set of states,
   \item $A$ is a mapping from state $s$ to a set of actions,
@@ -18,7 +18,7 @@ A Markov Decision Process (MDP) is represented as a 4-tuple $(S, A_{s}, P, R)$, 
 $R$ is referred to as the \textit{reward function}. 
 
 \subsection{Reinforcement Learning}
-Reinforcement Learning (RL) is a paradigm of Machine Learning (ML) that attempts to solve a specified MDP (usually by maximising the total accrued reward in some way). RL aims to generate a \textit{policy} $\pi : S \to A$, where $S$ is the set of states and $A$ is the set of possible actions (the policy may also take the form of a probability distributions, mapping a state-action pair to a probability). This policy is developed during the training phase, and then can be used to choose each action during execution.
+Reinforcement Learning (RL) is a paradigm of Machine Learning (ML) that attempts to solve a specified MDP (usually by maximising the total accrued reward in some way). RL aims to generate a \textit{policy} $\pi : S \to A$, where $S$ is the set of states and $A$ is the set of possible actions (the policy may also take the form of a probability distribution, mapping a state-action pair to a probability). This policy is developed during the training phase, and then can be used to choose each action during execution.
 
 RL algorithms can be either model-based or model-free. In model-based RL, the agent internally represents the environment in order to be able to predict subsequent states. In model-free RL the agent has no access to a model of the environment. Every RL algorithm discussed in this paper will be model-free.
 
@@ -40,7 +40,7 @@ The Q-learning algorithm maintains a state-action value function $Q : S \times A
 
 Informally, a random action is chosen with probability $\epsilon$, and the best action (according to the $Q$-function) otherwise.
 
-$Q$ is initialised to an arbitrary fixed value, usually $0$. At each timestep $t$, the algorithm chooses an action $a_t$ according to some policy. This action is then performed, moving from state $s_t$ to a new state $s_{t+1}$. The value of $Q(s_t,a_t)$ is then updated as follows:
+$Q(s,a)$ is initialised to an arbitrary fixed value (for each state-action pair $(s,a)$), usually $0$. At each timestep $t$, the algorithm chooses an action $a_t$ according to some policy. This action is then performed, moving from state $s_t$ to a new state $s_{t+1}$. The value of $Q(s_t,a_t)$ is then updated as follows:
 
 \[Q^{\textit{new}}(s_t,a_t) = (1-\alpha) \cdot Q(s_t,a_t) + \alpha \cdot (r_t + \gamma \cdot \argmax_{a \in A}Q(s_{t+1},a))\]
 
@@ -53,7 +53,7 @@ In standard Q-learning, the $Q$ function is stored as a table (a \textit{Q-table
 
 \subsection{Neural Networks}
 
-Neural networks aim to approximate a mathematical function. The network consists of multiple layers of artificial neurons which linearly combine inputs and uses an \textit{activation function} (which is typically non-linear) to compute an output. The outputs of each neuron in a particular layer form the inputs of each neuron in the next layer. More formally, we represent the weights of a layer $l$ by matrix $\boldsymbol{W}^l$, so that for neuron $i$ in layer $l$, the weight of the input from neuron $j$ in layer $l-1$ is $\boldsymbol{W}^l_{ij}$. We represent the biases of layer $l$ by vector $\boldsymbol{b}^l$, so that for neuron $i$, the value $\boldsymbol{b}^l_i$ is added to the result of the linear operation. Therefore, we can define the activations (represented by the column vector $\boldsymbol{a}^{l}$) of a layer $l$ \cite{csmlnotes}:
+Neural networks aim to approximate a mathematical function. The network consists of multiple layers of artificial neurons which linearly combine inputs and use an \textit{activation function} (which is typically non-linear) to compute an output. The outputs of each neuron in a particular layer form the inputs of each neuron in the next layer. More formally, we represent the weights of a layer $l$ by matrix $\boldsymbol{W}^l$, so that for neuron $i$ in layer $l$, the weight of the input from neuron $j$ in layer $l-1$ is $\boldsymbol{W}^l_{ij}$. We represent the biases of layer $l$ by vector $\boldsymbol{b}^l$, so that for neuron $i$, the value $\boldsymbol{b}^l_i$ is added to the result of the linear operation. Therefore, we can define the activations (represented by the column vector $\boldsymbol{a}^{l}$) of a layer $l$ \cite{csmlnotes}:
 
 \[
 \boldsymbol{z}^l = \boldsymbol{W}^l \boldsymbol{a}^{l-1} + \boldsymbol{b}^l
@@ -142,7 +142,7 @@ Multi-Agent Reinforcement Learning (MARL) is the process of learning policies fo
 
 \subsubsection{Centralised Training With Decentralised Execution}
 
-One paradigm often utilised with MARL is \textit{centralised learning with decentralised execution}, which allows for a single controller (which has access to the global state) to coordinate the learning of all agents, while during execution each agent operates independently using its learned policy. This way, learning benefits from the full environment state, including other agents' observations, while yielding decentralisable policies.
+One paradigm often utilised with MARL is \textit{centralised training with decentralised execution}, which allows for a single controller (which has access to the global state) to coordinate the learning of all agents, while during execution each agent operates independently using its learned policy. This way, learning benefits from the full environment state, including other agents' observations, while yielding decentralisable policies.
 
 \subsubsection{The StarCraft Multi-Agent Challenge}
 
@@ -183,7 +183,7 @@ In SMAC (and in this project) we consider the following unit types:
 \end{figure}
 
 \subsubsection{Dec-POMDPs}
-A Decentralised Partially Observable Markov Decision Process (dec-POMDP) is an extension of a regular MDP for use in multi-agent reinforcement learning. 
+A Decentralised Partially Observable Markov Decision Process (dec-POMDP) is an extension of a regular MDP for use in MARL. 
 
 As described in \cite{dec-pomdp}, we can define a dec-POMDP as follows:
 \begin{definition}\textbf{\normalfont{\cite{dec-pomdp}}}{ (Dec-POMDP)}
@@ -205,7 +205,7 @@ Process is defined as a tuple $\mathscr{M} = \langle \mathbb{D,S,A},T,\mathbb{O}
 At each time step (with the environment in state $s \in \mathbb{S}$), each agent $d \in \mathbb{D}$ will choose an action $a^d$ (to form the joint action $\textbf{a} \in \mathbb{A}$) and will transition to a new state $s'$ with probability $T(s'|s,\textbf{a})$. Each agent will receive the reward $R(s, \textbf{a})$. Individual observations $o^d$ are made by each agent to form the joint observation $\textbf{o} \in \mathbb{O}$. A joint observation \textbf{o} occurs with probability $O(\textbf{o})$. There is an action-observation history $\tau^d \in (\mathbb{A} \times \mathbb{O})^*$ for each agent $d \in \mathbb{D}$. This conditions a stochastic policy $\pi^d(a^d|\tau^d) : (\mathbb{A} \times \mathbb{O})^* \times \mathbb{A} \to [0, 1]$. Intuitively, the policy $\pi^d$ gives the probability that a particular action $a^d$ is taken, given an action-observation history $\tau^d$, for agent $d$.
 
 \subsubsection{Independent Q-Learning}
-Independent Q-learning \cite{IQL} is a simple extension of Q-learning to the multi-agent setting. The problem is decomposed into multiple agents, each employing Q-learning independently, sharing the same environment. Although this technique does not account for the non-stationarity of sharing the same environment, it is surprisingly effective in practice \cite{iqlisgood}. 
+Independent Q-learning \cite{IQL} (IQL) is a simple extension of Q-learning to the multi-agent setting. The problem is decomposed into multiple agents, each employing Q-learning independently, sharing the same environment. Although this technique does not account for the non-stationarity of sharing the same environment, it is surprisingly effective in practice \cite{iqlisgood}. 
 
 
 \subsubsection{Value Decomposition Networks}
@@ -217,7 +217,7 @@ where $\boldsymbol{\tau}$ is the joint observation history, $\textbf{a}$ is the 
 
 Q is then learned in the same way as DQN, but during execution this policy is very easy to decentralise (each agent chooses greedily with respect to its own $Q_i$).
 
-This follows the \textit{centralised learning with decentralised execution} paradigm.
+This follows the \textit{centralised training with decentralised execution} paradigm.
 
 \subsubsection{QMIX}
 QMIX is a state-of-the-art deep MARL algorithm that lies between the extremes of IQL and centralised Q-learning \cite{qmixcite}. Instead of requiring the decentralised policies be consistent with the centralised counterpart, as in VDN, all that we require in this section is that a global argmax performed on $Q_{tot}$ yields
@@ -238,7 +238,7 @@ performed on each $Q_a$:
 
 QMIX represents $Q_{tot}$ using an architecture
 consisting of agent networks, a mixing network, and a set
-of hypernetworks \cite{hypernetworks} \cite{qmixcite}. Each agent has its own deep recurrent Q-network (DRQN) \cite{dqrn}, the outputs of which are fed into the mixing network: a feed-forward neural network that mixes them
+of hypernetworks \cite{hypernetworks} \cite{qmixcite}. Each agent has its own deep recurrent Q-network \cite{dqrn}, the outputs of which are fed into the mixing network: a feed-forward neural network that mixes them
 monotonically, producing the values of $Q_{tot}$ \cite{qmixcite}. The weights of the mixing network are produced by separate hypernetworks \cite{qmixcite}.
 
 An overview of the networks can be seen in figure \ref{fig:qmix}, but further details can be found in \cite{qmixcite}.
