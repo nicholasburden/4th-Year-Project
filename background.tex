@@ -140,7 +140,7 @@ Where $y^{DQN}=r+\gamma \max_{a'}Q(s',a';\theta^-)$ ($\theta^-$ are the paramete
 Multi-Agent Reinforcement Learning (MARL) is the process of learning policies for multiple cooperative (or adversarial) agents interacting in the same environment. In this project, we only consider cooperative agents. 
 
 
-\subsubsection{Centralised Training With Decentralised Execution}
+\subsubsection{Centralised Training with Decentralised Execution}
 
 One paradigm often utilised with MARL is \textit{centralised training with decentralised execution}, which allows for a single controller (which has access to the global state) to coordinate the learning of all agents, while during execution each agent operates independently using its learned policy. This way, learning benefits from the full environment state, including other agents' observations, while yielding decentralisable policies.
 

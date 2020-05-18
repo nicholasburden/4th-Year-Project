@@ -15,7 +15,7 @@ To train the agent networks, a server of Nvidia RTX 2080 TI GPUs is used which p
 
 
 
-\subsection{Recurrent Neural Network Agents}
+\subsection{Recurrent Neural Network Architectures}
 
 
 The first agent networks we will explore are simple RNN architectures. RNNs are generally well suited to this task due to their ability to store past information (such as the enemy most recently attacked or where it has moved from) in an internal state. This enables the agent to have historical context to its inputs and own decisions.
@@ -62,7 +62,7 @@ The action encoder turns StarCraft II actions (one-hot encoding) into grid actio
 
 Note that both encoders do not have any learned parameters, and are simply used to prepare the inputs before they are passed into the agent network.
 
-\subsubsection{Convolutional Neural Network Agents}
+\subsubsection{Convolutional Neural Network Architectures}
 
 A possible way to enhance the performance of the simple RNN agent network is to include convolutional layers. This allows the agent network to make stronger deductions about the spatial relations between entities in each observation, and recognise patterns that would otherwise not be noticed, especially when observations and actions are represented as images (grid-based). 
 
